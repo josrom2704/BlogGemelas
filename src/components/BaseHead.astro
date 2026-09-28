@@ -1,0 +1,50 @@
+---
+import { site } from "../config";
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  articulo?: boolean;
+}
+
+const {
+  title,
+  description = site.descripcion,
+  image = "/images/og-default.jpg",
+  articulo = false,
+} = Astro.props;
+
+const tituloCompleto = title === site.nombre ? title : `${title} · ${site.nombre}`;
+const urlCanonica = new URL(Astro.url.pathname, Astro.site ?? site.url);
+const urlImagen = new URL(image, Astro.site ?? site.url);
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<link rel="alternate" type="application/rss+xml" title={site.nombre} href="/rss.xml" />
+<meta name="generator" content={Astro.generator} />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+<title>{tituloCompleto}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={urlCanonica} />
+
+<!-- Open Graph -->
+<meta property="og:type" content={articulo ? "article" : "website"} />
+<meta property="og:url" content={urlCanonica} />
+<meta property="og:title" content={tituloCompleto} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={urlImagen} />
+<meta property="og:locale" content="es_SV" />
+<meta property="og:site_name" content={site.nombre} />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={tituloCompleto} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={urlImagen} />

@@ -1,0 +1,167 @@
+---
+import { site } from "../config";
+import Corazon from "./Corazon.astro";
+
+const ruta = Astro.url.pathname;
+
+const enlaces = [
+  { href: "/", texto: "Inicio" },
+  { href: "/blog/", texto: "Blog" },
+  { href: "/sobre-nosotras/", texto: "Sobre nosotras" },
+  { href: "/hmun-2027/", texto: "HMUN 2027" },
+  { href: "/como-ayudar/", texto: "Cómo ayudar" },
+];
+
+function estaActivo(href: string) {
+  if (href === "/") return ruta === "/";
+  return ruta.startsWith(href);
+}
+---
+
+<header class="encabezado">
+  <div class="contenedor encabezado__interior">
+    <a href="/" class="encabezado__logo">
+      <Corazon color="#8B2439" class="encabezado__corazon" />
+      <span>{site.nombre}</span>
+    </a>
+
+    <button
+      id="boton-menu"
+      class="encabezado__boton-menu"
+      aria-expanded="false"
+      aria-controls="nav-principal"
+      aria-label="Abrir menú"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav id="nav-principal" class="encabezado__nav">
+      {
+        enlaces.map((enlace) => (
+          <a href={enlace.href} class:list={["encabezado__enlace", { activo: estaActivo(enlace.href) }]}>
+            {enlace.texto}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<style>
+  .encabezado {
+    background: rgba(250, 247, 242, 0.9);
+    backdrop-filter: blur(6px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 2px solid var(--color-rosa);
+  }
+
+  .encabezado__interior {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.9rem;
+    padding-bottom: 0.9rem;
+  }
+
+  .encabezado__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-manuscrita);
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--color-texto);
+  }
+
+  .encabezado__corazon {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+
+  .encabezado__nav {
+    display: flex;
+    gap: 1.6rem;
+  }
+
+  .encabezado__enlace {
+    text-decoration: none;
+    color: var(--color-texto-suave);
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.3rem 0;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .encabezado__enlace:hover,
+  .encabezado__enlace.activo {
+    color: var(--color-fernanda);
+    border-color: var(--color-fernanda);
+  }
+
+  .encabezado__boton-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 2.4rem;
+    height: 2.4rem;
+    background: white;
+    border: 2px solid var(--color-rosa);
+    border-radius: 12px;
+    cursor: pointer;
+  }
+
+  .encabezado__boton-menu span {
+    display: block;
+    width: 1.3rem;
+    height: 2px;
+    background: var(--color-texto);
+    margin: 0 auto;
+  }
+
+  @media (max-width: 780px) {
+    .encabezado__boton-menu {
+      display: flex;
+    }
+
+    .encabezado__nav {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--color-crema);
+      flex-direction: column;
+      gap: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.25s ease;
+      border-bottom: 2px solid var(--color-rosa);
+    }
+
+    .encabezado__nav.abierto {
+      max-height: 20rem;
+    }
+
+    .encabezado__enlace {
+      padding: 0.9rem 1.25rem;
+      border-bottom: 1px solid var(--color-rosa);
+      border-radius: 0;
+    }
+  }
+</style>
+
+<script>
+  const boton = document.getElementById("boton-menu");
+  const nav = document.getElementById("nav-principal");
+
+  boton?.addEventListener("click", () => {
+    const abierto = nav?.classList.toggle("abierto");
+    boton.setAttribute("aria-expanded", abierto ? "true" : "false");
+  });
+</script>

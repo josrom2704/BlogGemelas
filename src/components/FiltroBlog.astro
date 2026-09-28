@@ -1,0 +1,139 @@
+---
+import { categorias, autoras } from "../config";
+
+const opcionesAutor = [
+  { valor: "todas", texto: "Todas" },
+  { valor: "fernanda", texto: autoras.fernanda.nombre },
+  { valor: "jimena", texto: autoras.jimena.nombre },
+  { valor: "ambas", texto: "Las dos" },
+];
+---
+
+<div class="filtro-blog">
+  <div class="filtro-blog__grupo">
+    <span class="filtro-blog__titulo">Categoría</span>
+    <div class="filtro-blog__opciones" data-filtro="categoria">
+      <button class="filtro-blog__boton activo" data-valor="todas" type="button">Todas</button>
+      {categorias.map((cat) => (
+        <button class="filtro-blog__boton" data-valor={cat} type="button">{cat}</button>
+      ))}
+    </div>
+  </div>
+
+  <div class="filtro-blog__grupo">
+    <span class="filtro-blog__titulo">Autora</span>
+    <div class="filtro-blog__opciones" data-filtro="autor">
+      {opcionesAutor.map((op) => (
+        <button
+          class:list={["filtro-blog__boton", { activo: op.valor === "todas" }]}
+          data-valor={op.valor}
+          type="button"
+        >
+          {op.texto}
+        </button>
+      ))}
+    </div>
+  </div>
+</div>
+
+<p class="filtro-blog__vacio texto-suave" id="filtro-vacio" hidden>
+  No hay posts con esta combinación de filtros todavía. ¡Vuelve pronto!
+</p>
+
+<style>
+  .filtro-blog {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.75rem;
+    margin-bottom: 2.25rem;
+  }
+
+  .filtro-blog__titulo {
+    display: block;
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-texto-suave);
+    margin-bottom: 0.5rem;
+  }
+
+  .filtro-blog__opciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .filtro-blog__boton {
+    font-family: var(--font-texto);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    border: 2px solid var(--color-rosa);
+    background: white;
+    color: var(--color-texto);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .filtro-blog__boton:hover {
+    border-color: var(--color-fernanda);
+  }
+
+  .filtro-blog__boton.activo {
+    background: var(--gradiente-ambas);
+    border-color: transparent;
+    color: white;
+  }
+
+  .filtro-blog__vacio {
+    margin: 1.5rem 0;
+  }
+</style>
+
+<script>
+  const grupos = document.querySelectorAll<HTMLElement>("[data-filtro]");
+  const items = document.querySelectorAll<HTMLElement>("[data-item-categoria]");
+  const mensajeVacio = document.getElementById("filtro-vacio");
+
+  const estado = { categoria: "todas", autor: "todas" };
+
+  function aplicarFiltros() {
+    let visibles = 0;
+    items.forEach((item) => {
+      const coincideCategoria = estado.categoria === "todas" || item.dataset.itemCategoria === estado.categoria;
+      const coincideAutor = estado.autor === "todas" || item.dataset.itemAutor === estado.autor;
+      const mostrar = coincideCategoria && coincideAutor;
+      item.hidden = !mostrar;
+      if (mostrar) visibles += 1;
+    });
+    if (mensajeVacio) mensajeVacio.hidden = visibles > 0;
+  }
+
+  function seleccionar(tipo: "categoria" | "autor", valor: string) {
+    const grupo = document.querySelector<HTMLElement>(`[data-filtro="${tipo}"]`);
+    const boton = grupo?.querySelector<HTMLButtonElement>(`[data-valor="${valor}"]`);
+    if (!grupo || !boton) return;
+    grupo.querySelectorAll(".filtro-blog__boton").forEach((b) => b.classList.remove("activo"));
+    boton.classList.add("activo");
+    estado[tipo] = valor;
+  }
+
+  grupos.forEach((grupo) => {
+    const tipo = grupo.dataset.filtro as "categoria" | "autor";
+    grupo.querySelectorAll<HTMLButtonElement>(".filtro-blog__boton").forEach((boton) => {
+      boton.addEventListener("click", () => {
+        seleccionar(tipo, boton.dataset.valor ?? "todas");
+        aplicarFiltros();
+      });
+    });
+  });
+
+  const parametros = new URLSearchParams(window.location.search);
+  const categoriaInicial = parametros.get("categoria");
+  const autorInicial = parametros.get("autor");
+  if (categoriaInicial) seleccionar("categoria", categoriaInicial);
+  if (autorInicial) seleccionar("autor", autorInicial);
+  aplicarFiltros();
+</script>

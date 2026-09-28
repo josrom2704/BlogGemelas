@@ -1,0 +1,122 @@
+---
+import { hmun } from "../config";
+
+interface Props {
+  compacta?: boolean;
+}
+
+const { compacta = false } = Astro.props;
+---
+
+<div class:list={["cuenta-regresiva", { "cuenta-regresiva--compacta": compacta }]} data-fecha={hmun.fechaInicio}>
+  <div class="cuenta-regresiva__bloque">
+    <span class="cuenta-regresiva__numero" data-unidad="dias">--</span>
+    <span class="cuenta-regresiva__etiqueta">días</span>
+  </div>
+  <div class="cuenta-regresiva__bloque">
+    <span class="cuenta-regresiva__numero" data-unidad="horas">--</span>
+    <span class="cuenta-regresiva__etiqueta">horas</span>
+  </div>
+  <div class="cuenta-regresiva__bloque">
+    <span class="cuenta-regresiva__numero" data-unidad="minutos">--</span>
+    <span class="cuenta-regresiva__etiqueta">min</span>
+  </div>
+  <div class="cuenta-regresiva__bloque">
+    <span class="cuenta-regresiva__numero" data-unidad="segundos">--</span>
+    <span class="cuenta-regresiva__etiqueta">seg</span>
+  </div>
+</div>
+
+<p class="cuenta-regresiva__mensaje texto-suave" data-mensaje-llegada hidden>
+  ¡Ya estamos en Boston! ♥
+</p>
+
+<style>
+  .cuenta-regresiva {
+    display: flex;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+  }
+
+  .cuenta-regresiva__bloque {
+    background: white;
+    border-radius: 16px;
+    padding: 0.9rem 1.1rem;
+    min-width: 4.4rem;
+    text-align: center;
+    box-shadow: var(--sombra-suave);
+  }
+
+  .cuenta-regresiva--compacta .cuenta-regresiva__bloque {
+    padding: 0.6rem 0.8rem;
+    min-width: 3.6rem;
+  }
+
+  .cuenta-regresiva__numero {
+    display: block;
+    font-family: var(--font-manuscrita);
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: var(--color-fernanda);
+    line-height: 1;
+  }
+
+  .cuenta-regresiva--compacta .cuenta-regresiva__numero {
+    font-size: 1.6rem;
+  }
+
+  .cuenta-regresiva__etiqueta {
+    display: block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-texto-suave);
+    margin-top: 0.2rem;
+  }
+</style>
+
+<script>
+  function iniciarCuentaRegresiva(contenedor: HTMLElement) {
+    const fechaObjetivo = new Date(contenedor.dataset.fecha ?? "").getTime();
+    const numeros = {
+      dias: contenedor.querySelector('[data-unidad="dias"]'),
+      horas: contenedor.querySelector('[data-unidad="horas"]'),
+      minutos: contenedor.querySelector('[data-unidad="minutos"]'),
+      segundos: contenedor.querySelector('[data-unidad="segundos"]'),
+    };
+    const mensajeLlegada = contenedor.parentElement?.querySelector("[data-mensaje-llegada]") as HTMLElement | null;
+    let intervalo: ReturnType<typeof setInterval>;
+
+    function actualizar() {
+      const ahora = Date.now();
+      const restante = fechaObjetivo - ahora;
+
+      if (restante <= 0) {
+        contenedor.style.display = "none";
+        if (mensajeLlegada) mensajeLlegada.hidden = false;
+        clearInterval(intervalo);
+        return;
+      }
+
+      const segundoMs = 1000;
+      const minutoMs = segundoMs * 60;
+      const horaMs = minutoMs * 60;
+      const diaMs = horaMs * 24;
+
+      const dias = Math.floor(restante / diaMs);
+      const horas = Math.floor((restante % diaMs) / horaMs);
+      const minutos = Math.floor((restante % horaMs) / minutoMs);
+      const segundos = Math.floor((restante % minutoMs) / segundoMs);
+
+      if (numeros.dias) numeros.dias.textContent = String(dias);
+      if (numeros.horas) numeros.horas.textContent = String(horas).padStart(2, "0");
+      if (numeros.minutos) numeros.minutos.textContent = String(minutos).padStart(2, "0");
+      if (numeros.segundos) numeros.segundos.textContent = String(segundos).padStart(2, "0");
+    }
+
+    actualizar();
+    intervalo = setInterval(actualizar, 1000);
+  }
+
+  document.querySelectorAll<HTMLElement>(".cuenta-regresiva").forEach(iniciarCuentaRegresiva);
+</script>

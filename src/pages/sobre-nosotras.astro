@@ -1,0 +1,201 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Corazon from "../components/Corazon.astro";
+import { autoras, loQueCompartimos, site } from "../config";
+---
+
+<BaseLayout title="Sobre nosotras" description={`Conoce a las hermanas detrás de ${site.nombre}: gustos, sueños y lo que comparten.`}>
+  <section class="seccion contenedor">
+    <header class="centro sobre__intro">
+      <h1 class="titulo-brocha">Sobre nosotras</h1>
+      <p class="texto-suave">
+        Somos gemelas, pero desde acá cada quien escribe con su propia voz. Esta página es para que nos conozcas un poco mejor.
+      </p>
+    </header>
+
+    <div class="grid-2 sobre__gemelas">
+      <article id="fernanda" class="tarjeta sobre__tarjeta" style={`--acento: ${autoras.fernanda.color}`}>
+        <div class="sobre__encabezado">
+          <div class="sobre__avatar" style={`background:${autoras.fernanda.color}`}>
+            <img
+              src={autoras.fernanda.foto}
+              alt={autoras.fernanda.nombre}
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            />
+            <span class="sobre__inicial" style="display:none;">{autoras.fernanda.inicial}</span>
+          </div>
+          <div>
+            <h2>{autoras.fernanda.nombre}</h2>
+            <p class="sobre__frase texto-suave">"{autoras.fernanda.frase}"</p>
+          </div>
+        </div>
+
+        <h3 class="sobre__subtitulo">Le gusta</h3>
+        <ul class="sobre__lista">
+          {autoras.fernanda.gustos.map((g) => <li>{g}</li>)}
+        </ul>
+
+        <h3 class="sobre__subtitulo">Sueña con</h3>
+        <ul class="sobre__lista">
+          {autoras.fernanda.suenos.map((s) => <li>{s}</li>)}
+        </ul>
+
+        <a class="sobre__ver-posts" href="/blog/?autor=fernanda">Ver sus posts →</a>
+      </article>
+
+      <article id="jimena" class="tarjeta sobre__tarjeta" style={`--acento: ${autoras.jimena.color}`}>
+        <div class="sobre__encabezado">
+          <div class="sobre__avatar" style={`background:${autoras.jimena.color}`}>
+            <img
+              src={autoras.jimena.foto}
+              alt={autoras.jimena.nombre}
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            />
+            <span class="sobre__inicial" style="display:none;">{autoras.jimena.inicial}</span>
+          </div>
+          <div>
+            <h2>{autoras.jimena.nombre}</h2>
+            <p class="sobre__frase texto-suave">"{autoras.jimena.frase}"</p>
+          </div>
+        </div>
+
+        <h3 class="sobre__subtitulo">Le gusta</h3>
+        <ul class="sobre__lista">
+          {autoras.jimena.gustos.map((g) => <li>{g}</li>)}
+        </ul>
+
+        <h3 class="sobre__subtitulo">Sueña con</h3>
+        <ul class="sobre__lista">
+          {autoras.jimena.suenos.map((s) => <li>{s}</li>)}
+        </ul>
+
+        <a class="sobre__ver-posts" href="/blog/?autor=jimena">Ver sus posts →</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="compartimos">
+    <div class="contenedor centro">
+      <h2 class="titulo-brocha">Lo que compartimos <Corazon color="#8B2439" class="compartimos__corazon" /></h2>
+      <ul class="compartimos__lista">
+        {loQueCompartimos.map((frase) => <li>{frase}</li>)}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .sobre__intro {
+    max-width: 640px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .sobre__gemelas {
+    align-items: stretch;
+  }
+
+  .sobre__tarjeta {
+    padding: 2rem;
+    border-top: 5px solid var(--acento);
+    gap: 0;
+  }
+
+  .sobre__encabezado {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .sobre__avatar {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .sobre__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .sobre__inicial {
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: var(--font-manuscrita);
+    font-size: 1.9rem;
+    font-weight: 700;
+  }
+
+  .sobre__tarjeta h2 {
+    margin-bottom: 0.2rem;
+  }
+
+  .sobre__frase {
+    font-style: italic;
+    margin: 0;
+    font-size: 0.92rem;
+  }
+
+  .sobre__subtitulo {
+    font-family: var(--font-texto);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--acento);
+    font-weight: 800;
+    margin: 1.2rem 0 0.5rem;
+  }
+
+  .sobre__lista {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+
+  .sobre__lista li {
+    margin-bottom: 0.3rem;
+  }
+
+  .sobre__ver-posts {
+    display: inline-block;
+    margin-top: 1.5rem;
+    text-decoration: none;
+    font-weight: 800;
+    color: var(--acento);
+    font-size: 0.9rem;
+  }
+
+  .compartimos {
+    background: var(--color-azul-claro);
+    padding: 3.5rem 0;
+    margin-top: 1rem;
+  }
+
+  .compartimos__corazon {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+
+  .compartimos__lista {
+    list-style: none;
+    padding: 0;
+    max-width: 640px;
+    margin: 1.5rem auto 0;
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .compartimos__lista li {
+    background: white;
+    border-radius: 16px;
+    padding: 1rem 1.3rem;
+    box-shadow: var(--sombra-suave);
+    font-weight: 700;
+  }
+</style>

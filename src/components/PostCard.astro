@@ -1,0 +1,114 @@
+---
+import type { Post } from "../lib/posts";
+import { formatearFecha, tiempoDeLectura } from "../lib/posts";
+import AutoraBadge from "./AutoraBadge.astro";
+
+interface Props {
+  post: Post;
+  destacado?: boolean;
+}
+
+const { post, destacado = false } = Astro.props;
+const { title, description, cover, coverAlt, category, date, author } = post.data;
+const minutos = tiempoDeLectura(post.body ?? "");
+---
+
+<article class:list={["tarjeta tarjeta-post", { "tarjeta-post--destacada": destacado }]}>
+  <a href={`/blog/${post.id}/`} class="tarjeta-post__enlace-imagen">
+    <img src={cover} alt={coverAlt ?? title} loading="lazy" />
+    <span class="tarjeta-post__categoria">{category}</span>
+  </a>
+  <div class="tarjeta-post__cuerpo">
+    <AutoraBadge autor={author} tamano="sm" />
+    <h3 class="tarjeta-post__titulo">
+      <a href={`/blog/${post.id}/`}>{title}</a>
+    </h3>
+    <p class="texto-suave tarjeta-post__descripcion">{description}</p>
+    <p class="tarjeta-post__meta texto-suave">
+      {formatearFecha(date)} · {minutos} min de lectura
+    </p>
+  </div>
+</article>
+
+<style>
+  .tarjeta-post__enlace-imagen {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--color-azul-claro);
+  }
+
+  .tarjeta-post__enlace-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+
+  .tarjeta-post:hover .tarjeta-post__enlace-imagen img {
+    transform: scale(1.05);
+  }
+
+  .tarjeta-post__categoria {
+    position: absolute;
+    top: 0.8rem;
+    left: 0.8rem;
+    background: white;
+    color: var(--color-fernanda);
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .tarjeta-post__cuerpo {
+    padding: 1.25rem 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .tarjeta-post__titulo {
+    margin: 0.2rem 0 0;
+    font-size: 1.5rem;
+  }
+
+  .tarjeta-post__titulo a {
+    text-decoration: none;
+    color: var(--color-texto);
+  }
+
+  .tarjeta-post__titulo a:hover {
+    text-decoration: underline;
+  }
+
+  .tarjeta-post__descripcion {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .tarjeta-post__meta {
+    margin: auto 0 0;
+    font-size: 0.8rem;
+  }
+
+  .tarjeta-post--destacada {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 720px) {
+    .tarjeta-post--destacada {
+      grid-template-columns: 1.1fr 1fr;
+    }
+
+    .tarjeta-post--destacada .tarjeta-post__enlace-imagen {
+      aspect-ratio: auto;
+      height: 100%;
+    }
+  }
+</style>

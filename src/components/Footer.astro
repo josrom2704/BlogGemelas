@@ -1,0 +1,85 @@
+---
+import { site, redes } from "../config";
+import Corazon from "./Corazon.astro";
+
+const anio = new Date().getFullYear();
+---
+
+<footer class="pie">
+  <div class="contenedor pie__interior">
+    <p class="pie__marca">
+      <Corazon color="#8B2439" class="pie__corazon" />
+      {site.nombre}
+      <Corazon color="#1B2A4A" class="pie__corazon" />
+    </p>
+    <p class="texto-suave pie__lema">{site.lema} ♥</p>
+    <nav class="pie__enlaces">
+      <a href="/blog/">Blog</a>
+      <a href="/hmun-2027/">HMUN 2027</a>
+      <a href="/como-ayudar/">Cómo ayudar</a>
+      <a href="/rss.xml">RSS</a>
+      {redes.instagram && <a href={redes.instagram} target="_blank" rel="noopener">Instagram</a>}
+      {redes.facebook && <a href={redes.facebook} target="_blank" rel="noopener">Facebook</a>}
+    </nav>
+    <p class="texto-suave pie__copy">© {anio} {site.nombre}. Hecho con cariño desde El Salvador.</p>
+  </div>
+</footer>
+
+<style>
+  .pie {
+    background: white;
+    border-top: 2px solid var(--color-rosa);
+    margin-top: 2rem;
+  }
+
+  .pie__interior {
+    padding: 2.5rem 1.25rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .pie__marca {
+    font-family: var(--font-manuscrita);
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+  }
+
+  .pie__corazon {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  .pie__lema {
+    margin: 0;
+  }
+
+  .pie__enlaces {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.1rem;
+    margin: 0.6rem 0;
+  }
+
+  .pie__enlaces a {
+    text-decoration: none;
+    font-weight: 700;
+    color: var(--color-texto);
+    font-size: 0.9rem;
+  }
+
+  .pie__enlaces a:hover {
+    color: var(--color-fernanda);
+  }
+
+  .pie__copy {
+    font-size: 0.82rem;
+    margin: 0;
+  }
+</style>

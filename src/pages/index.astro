@@ -1,0 +1,253 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PostCard from "../components/PostCard.astro";
+import CuentaRegresiva from "../components/CuentaRegresiva.astro";
+import Corazon from "../components/Corazon.astro";
+import { getPublishedPosts } from "../lib/posts";
+import { site, autoras, hmun } from "../config";
+
+const posts = (await getPublishedPosts()).slice(0, 3);
+---
+
+<BaseLayout title={site.nombre}>
+  <section class="hero">
+    <div class="contenedor hero__interior">
+      <p class="hero__kicker">Un diario compartido desde El Salvador</p>
+      <h1 class="hero__titulo">{site.nombre}</h1>
+      <p class="hero__lema">
+        {site.lema} <Corazon color="#8B2439" class="hero__corazon" />
+      </p>
+      <p class="hero__descripcion texto-suave">{site.descripcion}</p>
+      <div class="hero__acciones">
+        <a class="boton boton-primario" href="/blog/">Leer el blog</a>
+        <a class="boton boton-secundario" href="/hmun-2027/">Conocer HMUN 2027</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion contenedor">
+    <h2 class="titulo-brocha centro-si-movil">Somos nosotras</h2>
+    <div class="grid-2 presentacion">
+      <article class="tarjeta presentacion__tarjeta" style={`--acento: ${autoras.fernanda.color}`}>
+        <div class="presentacion__avatar" style={`background:${autoras.fernanda.color}`}>
+          <img
+            src={autoras.fernanda.foto}
+            alt={autoras.fernanda.nombre}
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          />
+          <span class="presentacion__inicial" style="display:none;">{autoras.fernanda.inicial}</span>
+        </div>
+        <h3>{autoras.fernanda.nombre}</h3>
+        <p class="texto-suave presentacion__frase">"{autoras.fernanda.frase}"</p>
+        <a class="presentacion__enlace" href="/sobre-nosotras/#fernanda">Conocerla mejor →</a>
+      </article>
+
+      <article class="tarjeta presentacion__tarjeta" style={`--acento: ${autoras.jimena.color}`}>
+        <div class="presentacion__avatar" style={`background:${autoras.jimena.color}`}>
+          <img
+            src={autoras.jimena.foto}
+            alt={autoras.jimena.nombre}
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          />
+          <span class="presentacion__inicial" style="display:none;">{autoras.jimena.inicial}</span>
+        </div>
+        <h3>{autoras.jimena.nombre}</h3>
+        <p class="texto-suave presentacion__frase">"{autoras.jimena.frase}"</p>
+        <a class="presentacion__enlace" href="/sobre-nosotras/#jimena">Conocerla mejor →</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="hmun-banner">
+    <div class="contenedor hmun-banner__interior">
+      <div>
+        <p class="hmun-banner__kicker">Nuestro gran proyecto</p>
+        <h2>Vamos rumbo a {hmun.siglas}</h2>
+        <p class="hmun-banner__texto">
+          Fuimos aceptadas como Delegación de El Salvador en el {hmun.nombreEvento}, del {hmun.fechaTextoCorta} en {hmun.ciudad}. Estamos recaudando fondos para llegar todas juntas.
+        </p>
+        <div class="hero__acciones">
+          <a class="boton boton-primario" href="/hmun-2027/">Ver el proyecto</a>
+          <a class="boton boton-secundario" href="/como-ayudar/">Cómo ayudar</a>
+        </div>
+      </div>
+      <div>
+        <p class="hmun-banner__cuenta-titulo">Faltan</p>
+        <CuentaRegresiva />
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion contenedor">
+    <div class="ultimos-posts__encabezado">
+      <h2 class="titulo-brocha">Últimas entradas</h2>
+      <a href="/blog/" class="ultimos-posts__ver-todo">Ver todo el blog →</a>
+    </div>
+
+    {posts.length === 0 ? (
+      <p class="texto-suave">Pronto empezaremos a publicar. ¡Vuelve pronto!</p>
+    ) : (
+      <div class="grid-posts">
+        {posts.map((post) => <PostCard post={post} />)}
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    background: linear-gradient(180deg, var(--color-rosa) 0%, var(--color-crema) 100%);
+    padding: 4rem 0 3rem;
+    text-align: center;
+  }
+
+  .hero__interior {
+    max-width: 720px;
+  }
+
+  .hero__kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 800;
+    font-size: 0.8rem;
+    color: var(--color-fernanda);
+    margin-bottom: 0.5rem;
+  }
+
+  .hero__titulo {
+    margin-bottom: 0.3rem;
+  }
+
+  .hero__lema {
+    font-family: var(--font-manuscrita);
+    font-size: 1.8rem;
+    color: var(--color-jimena);
+    margin-bottom: 1rem;
+  }
+
+  .hero__corazon {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+
+  .hero__descripcion {
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero__acciones {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.75rem;
+  }
+
+  .presentacion__tarjeta {
+    padding: 2rem 1.75rem;
+    align-items: center;
+    text-align: center;
+    gap: 0.6rem;
+    border-top: 5px solid var(--acento);
+  }
+
+  .presentacion__avatar {
+    width: 6.5rem;
+    height: 6.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+
+  .presentacion__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .presentacion__inicial {
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: var(--font-manuscrita);
+    font-size: 2.4rem;
+    font-weight: 700;
+  }
+
+  .presentacion__frase {
+    font-style: italic;
+    max-width: 320px;
+  }
+
+  .presentacion__enlace {
+    text-decoration: none;
+    font-weight: 800;
+    color: var(--acento);
+    font-size: 0.9rem;
+  }
+
+  .hmun-banner {
+    background: var(--color-jimena);
+    background: linear-gradient(120deg, var(--color-jimena) 0%, #2b3d63 100%);
+    color: white;
+    padding: 3.5rem 0;
+  }
+
+  .hmun-banner h2 {
+    color: white;
+  }
+
+  .hmun-banner__interior {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  @media (min-width: 780px) {
+    .hmun-banner__interior {
+      grid-template-columns: 1.3fr 1fr;
+    }
+  }
+
+  .hmun-banner__kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 800;
+    font-size: 0.8rem;
+    color: var(--color-rosa);
+    margin-bottom: 0.4rem;
+  }
+
+  .hmun-banner__texto {
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 520px;
+  }
+
+  .hmun-banner__cuenta-titulo {
+    font-family: var(--font-manuscrita);
+    font-size: 1.4rem;
+    margin-bottom: 0.6rem;
+    color: white;
+  }
+
+  .ultimos-posts__encabezado {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .ultimos-posts__ver-todo {
+    text-decoration: none;
+    font-weight: 800;
+    color: var(--color-fernanda);
+    font-size: 0.9rem;
+  }
+</style>

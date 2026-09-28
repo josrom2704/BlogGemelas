@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostCard from "../../components/PostCard.astro";
+import FiltroBlog from "../../components/FiltroBlog.astro";
+import { getPublishedPosts } from "../../lib/posts";
+import { site } from "../../config";
+
+const posts = await getPublishedPosts();
+---
+
+<BaseLayout title="Blog" description={`Todas las entradas del blog de ${site.nombre}.`}>
+  <section class="seccion contenedor">
+    <header class="blog-encabezado">
+      <h1 class="titulo-brocha">Nuestro blog</h1>
+      <p class="texto-suave">
+        Todo lo que hemos vivido, soñado y aprendido en el camino, escrito por María Fernanda, por María Jimena, o por las dos.
+      </p>
+    </header>
+
+    <FiltroBlog />
+
+    {posts.length === 0 ? (
+      <p class="texto-suave">Todavía no hay posts publicados. ¡Vuelve pronto!</p>
+    ) : (
+      <div class="grid-posts">
+        {posts.map((post) => (
+          <div data-item-categoria={post.data.category} data-item-autor={post.data.author}>
+            <PostCard post={post} />
+          </div>
+        ))}
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .blog-encabezado {
+    max-width: 640px;
+    margin: 0 0 2rem;
+  }
+</style>

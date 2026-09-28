@@ -1,0 +1,31 @@
+---
+import { autoras, type AutorId } from "../config";
+
+interface Props {
+  autor: AutorId;
+  tamano?: "sm" | "md";
+}
+
+const { autor, tamano = "md" } = Astro.props;
+
+const esAmbas = autor === "ambas";
+const nombre = esAmbas ? "María Fernanda y María Jimena" : autoras[autor].nombre;
+const inicial = esAmbas ? "F+J" : autoras[autor].inicial;
+const color = esAmbas ? undefined : autoras[autor].color;
+const foto = esAmbas ? undefined : autoras[autor].foto;
+---
+
+<span class={`badge-autora badge-autora--${tamano}`}>
+  <span
+    class="badge-autora__circulo"
+    style={esAmbas
+      ? `background: var(--gradiente-ambas); font-size: ${tamano === "sm" ? "0.7rem" : "0.85rem"};`
+      : `background: ${color};`}
+  >
+    {!esAmbas && foto ? (
+      <img src={foto} alt="" onerror="this.style.display='none';" />
+    ) : null}
+    {esAmbas ? inicial : autoras[autor].inicial}
+  </span>
+  {nombre}
+</span>

@@ -1,0 +1,285 @@
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap");
+
+:root {
+  /* Paleta base */
+  --color-crema: #faf7f2;
+  --color-rosa: #f6d9dc;
+  --color-azul-claro: #dce6f2;
+
+  /* Acentos por autora */
+  --color-fernanda: #8b2439;
+  --color-fernanda-suave: #f1dade;
+  --color-jimena: #1b2a4a;
+  --color-jimena-suave: #dbe1ec;
+  --gradiente-ambas: linear-gradient(120deg, #8b2439, #1b2a4a);
+
+  /* Texto */
+  --color-texto: #322a2c;
+  --color-texto-suave: #6b5f62;
+
+  /* Tipografía */
+  --font-manuscrita: "Caveat", cursive;
+  --font-texto: "Nunito", system-ui, sans-serif;
+
+  /* Layout */
+  --ancho-maximo: 1080px;
+  --radio-tarjeta: 22px;
+  --sombra-suave: 0 10px 30px rgba(139, 36, 57, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-texto);
+  color: var(--color-texto);
+  background-color: var(--color-crema);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-manuscrita);
+  line-height: 1.15;
+  margin: 0 0 0.4em;
+}
+
+h1 {
+  font-size: clamp(2.4rem, 6vw, 3.6rem);
+}
+
+h2 {
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+}
+
+h3 {
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+.contenedor {
+  width: 100%;
+  max-width: var(--ancho-maximo);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.seccion {
+  padding: 3.5rem 0;
+}
+
+/* -------------------------------------------------------------------- */
+/* Trazo tipo brocha detrás de títulos                                   */
+/* -------------------------------------------------------------------- */
+
+.titulo-brocha {
+  position: relative;
+  display: inline-block;
+}
+
+.titulo-brocha::before {
+  content: "";
+  position: absolute;
+  left: -0.3em;
+  right: -0.3em;
+  bottom: 0.05em;
+  top: 0.35em;
+  background: var(--brocha-color, var(--color-rosa));
+  border-radius: 60% 40% 55% 45% / 40% 45% 55% 60%;
+  z-index: -1;
+  transform: rotate(-1deg);
+  opacity: 0.8;
+}
+
+/* -------------------------------------------------------------------- */
+/* Corazón dibujado a mano (SVG inline vía máscara CSS)                  */
+/* -------------------------------------------------------------------- */
+
+.corazon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.1em;
+}
+
+/* -------------------------------------------------------------------- */
+/* Botones                                                                */
+/* -------------------------------------------------------------------- */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-texto);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.boton:hover {
+  transform: translateY(-2px);
+}
+
+.boton-primario {
+  background: var(--gradiente-ambas);
+  color: white;
+  box-shadow: var(--sombra-suave);
+}
+
+.boton-secundario {
+  background: white;
+  color: var(--color-texto);
+  border: 2px solid var(--color-rosa);
+}
+
+.boton-whatsapp {
+  background: #25d366;
+  color: white;
+}
+
+.boton-facebook {
+  background: #1877f2;
+  color: white;
+}
+
+/* -------------------------------------------------------------------- */
+/* Tarjetas                                                               */
+/* -------------------------------------------------------------------- */
+
+.tarjeta {
+  background: white;
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-suave);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* -------------------------------------------------------------------- */
+/* Badge de autora                                                       */
+/* -------------------------------------------------------------------- */
+
+.badge-autora {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--color-texto);
+}
+
+.badge-autora__circulo {
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: var(--font-manuscrita);
+  font-size: 1.1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--badge-color, var(--color-texto));
+}
+
+.badge-autora__circulo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+}
+
+.badge-autora__circulo {
+  position: relative;
+}
+
+.badge-autora--sm .badge-autora__circulo {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.85rem;
+}
+
+.badge-autora--sm {
+  font-size: 0.8rem;
+}
+
+/* -------------------------------------------------------------------- */
+/* Utilidades                                                             */
+/* -------------------------------------------------------------------- */
+
+.solo-lectura-pantalla {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.texto-suave {
+  color: var(--color-texto-suave);
+}
+
+.centro {
+  text-align: center;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 780px) {
+  .grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.grid-posts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+}
+
+@media (min-width: 640px) {
+  .grid-posts {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1000px) {
+  .grid-posts {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
