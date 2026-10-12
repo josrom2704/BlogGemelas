@@ -1,6 +1,8 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
-import { categorias } from "./config";
+import { categorias, idsAutores, type AutorId } from "./config";
+
+const autorId = z.enum(idsAutores as [AutorId, ...AutorId[]]);
 
 const blog = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/blog" }),
@@ -12,7 +14,8 @@ const blog = defineCollection({
     coverAlt: z.string().optional(),
     category: z.enum(categorias),
     tags: z.array(z.string()).default([]),
-    author: z.enum(["fernanda", "jimena", "ambas"]),
+    // Una persona ("fernanda") o varias (["fernanda", "lourdes"]); siempre se lee como lista.
+    author: z.union([autorId, z.array(autorId).min(1)]).transform((v) => (Array.isArray(v) ? v : [v])),
     draft: z.boolean().default(false),
   }),
 });

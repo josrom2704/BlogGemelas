@@ -1,6 +1,6 @@
 # DEMUNES (MUN El Salvador)
 
-Blog de María Fernanda y María Jimena rumbo al Harvard Model United Nations 2027, escrito con [Astro](https://astro.build) y desplegado en Vercel. Las páginas públicas son estáticas; el panel `/admin` corre en el servidor y publica los posts haciendo commits al repositorio.
+Blog de la delegación de El Salvador (María Fernanda, María Jimena, Lourdes y Camila) y sus colaboradores rumbo al Harvard Model United Nations 2027, escrito con [Astro](https://astro.build) y desplegado en Vercel. Las páginas públicas son estáticas; el panel `/admin` corre en el servidor y publica los posts haciendo commits al repositorio.
 
 ## Nombre del blog
 
@@ -26,7 +26,7 @@ npm run preview  # sirve dist/ para revisar el build de producción
 
 ## Panel de publicación (`/admin`)
 
-La forma normal de publicar es el panel en `https://<tu-sitio>/admin`. Cada hermana entra con su usuario y contraseña y puede:
+La forma normal de publicar es el panel en `https://<tu-sitio>/admin`. Cada integrante o colaborador entra con su propio usuario y contraseña y puede:
 
 - Ver todos los posts (publicados y borradores) leídos directamente del repositorio.
 - Crear un post con editor Markdown, barra de formato, portada e imágenes dentro del texto.
@@ -39,7 +39,7 @@ Cada acción es **un solo commit** en GitHub (post + imágenes juntos); Vercel l
 
 Copia `.env.example` como `.env` para probar en local, y configura las mismas variables en Vercel → Project Settings → Environment Variables:
 
-- `FERNANDA_USER` / `FERNANDA_PASS`, `JIMENA_USER` / `JIMENA_PASS`: credenciales del panel.
+- `<PERSONA>_USER` / `<PERSONA>_PASS`: credenciales del panel de cada persona definida en `src/config.ts`, usando su clave en mayúsculas: `FERNANDA_USER`, `JIMENA_USER`, `LOURDES_USER`, `CAMILA_USER`, etc. Quien no tenga sus dos variables configuradas simplemente no puede entrar.
 - `SESSION_SECRET`: texto largo y aleatorio para firmar la sesión.
 - `GITHUB_TOKEN`: token *fine-grained* con acceso solo a este repositorio y permiso **Contents: Read and write**.
 - `GITHUB_OWNER`, `GITHUB_REPO`, `GITHUB_BRANCH`: repositorio y rama donde se publican los posts.
@@ -67,19 +67,20 @@ Las portadas se guardan en `public/images/<slug>-portada-*.jpg` y las imágenes 
    - `title`, `date`, `description`
    - `cover`: ruta de la imagen dentro de `/public/images/`
    - `category`: una de `HMUN 2027`, `Recaudación`, `Vida`, `Colegio`, `Viajes`
-   - `author`: `fernanda`, `jimena` o `ambas`
+   - `author`: la clave de una persona (`"lourdes"`) o una lista si escribieron varias (`["fernanda", "camila"]`)
    - `draft: true` mientras lo estás escribiendo; cámbialo a `false` (o bórralo) para publicarlo
 3. Escribe el contenido en Markdown debajo del frontmatter.
 4. Guarda la imagen de portada en `public/images/`.
 
-**Importante — privacidad:** ambas son menores de edad. En cualquier post nuevo, usa solo nombres de pila (incluyendo los de Lourdes y Camila), y no incluyas apellidos, dirección, colegio ni edad exacta.
+**Importante — privacidad:** las integrantes son menores de edad. En cualquier post nuevo, usa solo nombres de pila y no incluyas apellidos, dirección, colegio ni edad exacta.
 
 ## Cambiar bios, contactos y fecha del evento
 
 Todo el contenido editable vive en **`src/config.ts`**:
 
 - `site`: nombre, lema y descripción del blog
-- `autoras`: bio, gustos, sueños y frase de cada hermana
+- `integrantes`: las 4 delegadas (nombre, color, foto, frase, gustos y sueños)
+- `colaboradores`: personas que ayudan y también publican; para agregar a alguien, añade una entrada aquí y configura sus variables `<CLAVE>_USER` / `<CLAVE>_PASS` en Vercel
 - `loQueCompartimos`: lista de la sección "Lo que compartimos"
 - `hmun`: fecha del evento (usada por la cuenta regresiva), delegación y descripción de HMUN
 - `contactosAyuda`: números de WhatsApp para la página "Cómo ayudar" (los números nunca se muestran en texto plano, solo se usan para generar el link `wa.me`)
@@ -92,7 +93,7 @@ Coloca estos archivos en `public/images/` (ya existen placeholders generados aut
 
 - `hmun-flyer.jpeg` — portada del post "¡Nos vamos a Harvard!"
 - `garage-sale.jpeg` — portada del post del Garage Sale
-- `fernanda.jpg` / `jimena.jpg` — fotos de perfil de cada hermana (si no existen, se muestra automáticamente su inicial en un círculo de su color)
+- `fernanda.jpg`, `jimena.jpg`, `lourdes.jpg`, `camila.jpg` — fotos de perfil de cada integrante (si no existen, se muestra automáticamente su inicial en un círculo de su color)
 
 No se usa la carta de invitación oficial de HMUN como imagen del sitio.
 

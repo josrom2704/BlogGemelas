@@ -1,31 +1,37 @@
 ---
-import { autoras, type AutorId } from "../config";
+import type { AutorId } from "../config";
+import { nombreAutores, personasDe } from "../lib/autores";
 
 interface Props {
-  autor: AutorId;
+  autores: AutorId[];
   tamano?: "sm" | "md";
 }
 
-const { autor, tamano = "md" } = Astro.props;
+const { autores, tamano = "md" } = Astro.props;
 
-const esAmbas = autor === "ambas";
-const nombre = esAmbas ? "María Fernanda y María Jimena" : autoras[autor].nombre;
-const inicial = esAmbas ? "F+J" : autoras[autor].inicial;
-const color = esAmbas ? undefined : autoras[autor].color;
-const foto = esAmbas ? undefined : autoras[autor].foto;
+const personas = personasDe(autores);
+const nombre = nombreAutores(autores);
 ---
 
 <span class={`badge-autora badge-autora--${tamano}`}>
-  <span
-    class="badge-autora__circulo"
-    style={esAmbas
-      ? `background: var(--gradiente-ambas); font-size: ${tamano === "sm" ? "0.7rem" : "0.85rem"};`
-      : `background: ${color};`}
-  >
-    {!esAmbas && foto ? (
-      <img src={foto} alt="" onerror="this.style.display='none';" />
-    ) : null}
-    {esAmbas ? inicial : autoras[autor].inicial}
+  <span class="badge-autora__grupo">
+    {personas.map((persona) => (
+      <span class="badge-autora__circulo" style={`background: ${persona.color};`}>
+        {persona.foto && <img src={persona.foto} alt="" onerror="this.style.display='none';" />}
+        {persona.inicial}
+      </span>
+    ))}
   </span>
   {nombre}
 </span>
+
+<style>
+  .badge-autora__grupo {
+    display: inline-flex;
+  }
+
+  .badge-autora__grupo .badge-autora__circulo + .badge-autora__circulo {
+    margin-left: -0.55em;
+    box-shadow: 0 0 0 2px white;
+  }
+</style>

@@ -13,7 +13,7 @@ export interface DatosPost {
   coverAlt?: string;
   category: Categoria;
   tags: string[];
-  author: AutorId;
+  author: AutorId[];
   draft: boolean;
 }
 
@@ -42,6 +42,12 @@ function leerValor(crudo: string): unknown {
   return valor;
 }
 
+function leerAutores(valor: unknown): AutorId[] {
+  const lista = Array.isArray(valor) ? valor.map(String) : valor ? [String(valor)] : [];
+  // Formato anterior: "ambas" = las dos hermanas.
+  return lista.flatMap((id) => (id === "ambas" ? ["fernanda", "jimena"] : [id])) as AutorId[];
+}
+
 export function parsearPost(texto: string): { datos: DatosPost; contenido: string } {
   const coincidencia = REGEX_ARCHIVO.exec(texto);
   if (!coincidencia) throw new Error("El archivo no tiene frontmatter válido.");
@@ -61,7 +67,7 @@ export function parsearPost(texto: string): { datos: DatosPost; contenido: strin
     coverAlt: campos.coverAlt ? String(campos.coverAlt) : undefined,
     category: String(campos.category ?? "") as Categoria,
     tags: Array.isArray(campos.tags) ? campos.tags.map(String) : [],
-    author: String(campos.author ?? "ambas") as AutorId,
+    author: leerAutores(campos.author),
     draft: campos.draft === true,
   };
 
@@ -79,7 +85,7 @@ export function serializarPost(datos: DatosPost, contenido: string): string {
     ...(datos.coverAlt ? [`coverAlt: ${texto(datos.coverAlt)}`] : []),
     `category: ${texto(datos.category)}`,
     `tags: [${datos.tags.map(texto).join(", ")}]`,
-    `author: ${texto(datos.author)}`,
+    `author: ${datos.author.length === 1 ? texto(datos.author[0]) : `[${datos.author.map(texto).join(", ")}]`}`,
     `draft: ${datos.draft}`,
     "---",
     "",

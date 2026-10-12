@@ -1,24 +1,11 @@
 /// <reference types="astro/client" />
 
-interface ImportMetaEnv {
-  readonly FERNANDA_USER: string;
-  readonly FERNANDA_PASS: string;
-  readonly JIMENA_USER: string;
-  readonly JIMENA_PASS: string;
-  readonly SESSION_SECRET: string;
-  readonly GITHUB_TOKEN: string;
-  readonly GITHUB_OWNER: string;
-  readonly GITHUB_REPO: string;
-  readonly GITHUB_BRANCH: string;
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
-}
+// Las variables del panel (<PERSONA>_USER/_PASS, SESSION_SECRET, GITHUB_*) se
+// leen en tiempo de ejecución con getSecret() de "astro:env/server".
 
 declare namespace App {
   interface Locals {
-    /** Autora con sesión iniciada en el panel. Solo existe en rutas protegidas. */
-    autor?: import("./lib/auth").AutorPanel;
+    /** Persona con sesión iniciada en el panel. Solo existe en rutas protegidas. */
+    autor?: import("./config").AutorId;
   }
 }

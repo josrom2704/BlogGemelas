@@ -85,7 +85,7 @@ function datosDesdeEntrada(entrada: EntradaPost, cover: string, fecha: string): 
     coverAlt: cover === PORTADA_POR_DEFECTO ? undefined : entrada.portadaAlt,
     category: entrada.categoria,
     tags: entrada.tags,
-    author: entrada.autor,
+    author: entrada.autores,
     draft: entrada.borrador,
   };
 }

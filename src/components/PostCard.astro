@@ -19,7 +19,7 @@ const minutos = tiempoDeLectura(post.body ?? "");
     <span class="tarjeta-post__categoria">{category}</span>
   </a>
   <div class="tarjeta-post__cuerpo">
-    <AutoraBadge autor={author} tamano="sm" />
+    <AutoraBadge autores={author} tamano="sm" />
     <h3 class="tarjeta-post__titulo">
       <a href={`/blog/${post.id}/`}>{title}</a>
     </h3>

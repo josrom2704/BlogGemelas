@@ -1,11 +1,9 @@
 ---
-import { categorias, autoras } from "../config";
+import { categorias, idsAutores, personas } from "../config";
 
 const opcionesAutor = [
   { valor: "todas", texto: "Todas" },
-  { valor: "fernanda", texto: autoras.fernanda.nombre },
-  { valor: "jimena", texto: autoras.jimena.nombre },
-  { valor: "ambas", texto: "Las dos" },
+  ...idsAutores.map((id) => ({ valor: id, texto: personas[id].nombre })),
 ];
 ---
 
@@ -21,7 +19,7 @@ const opcionesAutor = [
   </div>
 
   <div class="filtro-blog__grupo">
-    <span class="filtro-blog__titulo">Autora</span>
+    <span class="filtro-blog__titulo">Escrito por</span>
     <div class="filtro-blog__opciones" data-filtro="autor">
       {opcionesAutor.map((op) => (
         <button
@@ -103,7 +101,8 @@ const opcionesAutor = [
     let visibles = 0;
     items.forEach((item) => {
       const coincideCategoria = estado.categoria === "todas" || item.dataset.itemCategoria === estado.categoria;
-      const coincideAutor = estado.autor === "todas" || item.dataset.itemAutor === estado.autor;
+      const autoresItem = (item.dataset.itemAutor ?? "").split(" ");
+      const coincideAutor = estado.autor === "todas" || autoresItem.includes(estado.autor);
       const mostrar = coincideCategoria && coincideAutor;
       item.hidden = !mostrar;
       if (mostrar) visibles += 1;

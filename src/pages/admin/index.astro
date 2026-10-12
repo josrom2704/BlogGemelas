@@ -3,7 +3,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 import { nombrePorAutor } from "../../lib/auth";
 import { listarPosts, type PostRepo } from "../../lib/admin/posts-repo";
 import { mensajeDeError } from "../../lib/admin/respuestas";
-import { autoras } from "../../config";
+import { nombreAutores } from "../../lib/autores";
 import { formatearFecha } from "../../lib/posts";
 
 export const prerender = false;
@@ -31,10 +31,6 @@ const avisos: Record<string, string> = {
 const avisoClave = Object.keys(avisos).find((clave) => parametros.has(clave));
 const noEncontrado = parametros.get("error") === "no-encontrado";
 const errorAlAbrir = parametros.get("error") === "github";
-
-function nombreAutora(autor: PostRepo["datos"]["author"]): string {
-  return autor === "ambas" ? "Las dos" : autoras[autor].nombre;
-}
 
 function fechaLegible(fecha: string): string {
   return formatearFecha(new Date(`${fecha}T12:00:00`));
@@ -83,7 +79,7 @@ function fechaLegible(fecha: string): string {
           </span>
           <h2 class="fila__titulo">{post.datos.title}</h2>
           <p class="fila__meta texto-suave">
-            {fechaLegible(post.datos.date)} · {nombreAutora(post.datos.author)} · {post.datos.category}
+            {fechaLegible(post.datos.date)} · {nombreAutores(post.datos.author)} · {post.datos.category}
           </p>
         </div>
         <div class="fila__acciones">

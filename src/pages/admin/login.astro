@@ -15,7 +15,7 @@ const hayError = Astro.url.searchParams.get("error") === "1";
 <AdminLayout title="Iniciar sesión">
   <div class="login">
     <h1 class="titulo-brocha">Panel de publicación</h1>
-    <p class="texto-suave">Solo María Fernanda y María Jimena pueden entrar aquí.</p>
+    <p class="texto-suave">Acceso solo para la delegación y sus colaboradores.</p>
 
     {hayError && (
       <p class="login__error">Usuario o contraseña incorrectos. Intenta de nuevo.</p>

@@ -1,8 +1,6 @@
 // Convierte el FormData enviado por el editor del panel en datos validados.
 
-import { categorias, type AutorId, type Categoria } from "../../config";
-
-export const AUTORES_VALIDOS: readonly AutorId[] = ["fernanda", "jimena", "ambas"];
+import { categorias, idsAutores, type AutorId, type Categoria } from "../../config";
 
 // Vercel limita el cuerpo de cada petición a ~4.5MB, por eso el editor
 // comprime las imágenes en el navegador antes de enviarlas.
@@ -28,7 +26,7 @@ export interface EntradaPost {
   titulo: string;
   descripcion: string;
   categoria: Categoria;
-  autor: AutorId;
+  autores: AutorId[];
   contenido: string;
   tags: string[];
   fecha?: string;
@@ -62,7 +60,7 @@ export async function leerFormularioPost(datos: FormData): Promise<EntradaPost> 
   const descripcion = texto(datos, "descripcion");
   const contenido = texto(datos, "contenido");
   const categoria = texto(datos, "categoria") as Categoria;
-  const autor = texto(datos, "autor") as AutorId;
+  const autores = [...new Set(datos.getAll("autores").map(String))] as AutorId[];
   const fecha = texto(datos, "fecha");
 
   if (!titulo || !descripcion || !contenido) {
@@ -72,7 +70,8 @@ export async function leerFormularioPost(datos: FormData): Promise<EntradaPost> 
     throw new ErrorValidacion("El título o la descripción son demasiado largos.");
   }
   if (!categorias.includes(categoria)) throw new ErrorValidacion("La categoría no es válida.");
-  if (!AUTORES_VALIDOS.includes(autor)) throw new ErrorValidacion("La autora no es válida.");
+  if (autores.length === 0) throw new ErrorValidacion("Elige al menos una persona como autora.");
+  if (autores.some((id) => !idsAutores.includes(id))) throw new ErrorValidacion("Alguna de las autoras no es válida.");
   if (fecha && !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) throw new ErrorValidacion("La fecha no es válida.");
 
   const tags = texto(datos, "tags")
@@ -96,7 +95,7 @@ export async function leerFormularioPost(datos: FormData): Promise<EntradaPost> 
     titulo,
     descripcion,
     categoria,
-    autor,
+    autores,
     contenido,
     tags,
     fecha: fecha || undefined,

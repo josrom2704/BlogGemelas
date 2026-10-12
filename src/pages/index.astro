@@ -4,7 +4,7 @@ import PostCard from "../components/PostCard.astro";
 import CuentaRegresiva from "../components/CuentaRegresiva.astro";
 import Corazon from "../components/Corazon.astro";
 import { getPublishedPosts } from "../lib/posts";
-import { site, autoras, hmun } from "../config";
+import { site, hmun, idsIntegrantes, personas } from "../config";
 
 const posts = (await getPublishedPosts()).slice(0, 3);
 ---
@@ -28,34 +28,30 @@ const posts = (await getPublishedPosts()).slice(0, 3);
 
   <section class="seccion contenedor">
     <h2 class="titulo-brocha centro-si-movil">Somos nosotras</h2>
-    <div class="grid-2 presentacion">
-      <article class="tarjeta presentacion__tarjeta" style={`--acento: ${autoras.fernanda.color}`}>
-        <div class="presentacion__avatar" style={`background:${autoras.fernanda.color}`}>
-          <img
-            src={autoras.fernanda.foto}
-            alt={autoras.fernanda.nombre}
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-          />
-          <span class="presentacion__inicial" style="display:none;">{autoras.fernanda.inicial}</span>
-        </div>
-        <h3>{autoras.fernanda.nombre}</h3>
-        <p class="texto-suave presentacion__frase">"{autoras.fernanda.frase}"</p>
-        <a class="presentacion__enlace" href="/sobre-nosotras/#fernanda">Conocerla mejor →</a>
-      </article>
-
-      <article class="tarjeta presentacion__tarjeta" style={`--acento: ${autoras.jimena.color}`}>
-        <div class="presentacion__avatar" style={`background:${autoras.jimena.color}`}>
-          <img
-            src={autoras.jimena.foto}
-            alt={autoras.jimena.nombre}
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-          />
-          <span class="presentacion__inicial" style="display:none;">{autoras.jimena.inicial}</span>
-        </div>
-        <h3>{autoras.jimena.nombre}</h3>
-        <p class="texto-suave presentacion__frase">"{autoras.jimena.frase}"</p>
-        <a class="presentacion__enlace" href="/sobre-nosotras/#jimena">Conocerla mejor →</a>
-      </article>
+    <p class="texto-suave presentacion__intro">
+      Somos la delegación de El Salvador en {hmun.siglas}: cuatro compañeras con un mismo sueño.
+    </p>
+    <div class="presentacion">
+      {idsIntegrantes.map((id) => {
+        const persona = personas[id];
+        return (
+          <article class="tarjeta presentacion__tarjeta" style={`--acento: ${persona.color}`}>
+            <div class="presentacion__avatar" style={`background:${persona.color}`}>
+              {persona.foto && (
+                <img
+                  src={persona.foto}
+                  alt={persona.nombre}
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                />
+              )}
+              <span class="presentacion__inicial" style={persona.foto ? "display:none;" : "display:flex;"}>{persona.inicial}</span>
+            </div>
+            <h3>{persona.nombre}</h3>
+            {persona.frase && <p class="texto-suave presentacion__frase">"{persona.frase}"</p>}
+            <a class="presentacion__enlace" href={`/sobre-nosotras/#${id}`}>Conocerla mejor →</a>
+          </article>
+        );
+      })}
     </div>
   </section>
 
@@ -153,8 +149,19 @@ const posts = (await getPublishedPosts()).slice(0, 3);
     margin-top: 1.75rem;
   }
 
+  .presentacion__intro {
+    max-width: 640px;
+    margin: -0.5rem 0 1.75rem;
+  }
+
+  .presentacion {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+  }
+
   .presentacion__tarjeta {
-    padding: 2rem 1.75rem;
+    padding: 2rem 1.25rem;
     align-items: center;
     text-align: center;
     gap: 0.6rem;

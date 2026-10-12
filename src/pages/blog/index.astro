@@ -13,7 +13,7 @@ const posts = await getPublishedPosts();
     <header class="blog-encabezado">
       <h1 class="titulo-brocha">Nuestro blog</h1>
       <p class="texto-suave">
-        Todo lo que hemos vivido, soñado y aprendido en el camino, escrito por María Fernanda, por María Jimena, o por las dos.
+        Todo lo que hemos vivido, soñado y aprendido en el camino, escrito por María Fernanda, María Jimena, Lourdes y Camila.
       </p>
     </header>
 
@@ -24,7 +24,7 @@ const posts = await getPublishedPosts();
     ) : (
       <div class="grid-posts">
         {posts.map((post) => (
-          <div data-item-categoria={post.data.category} data-item-autor={post.data.author}>
+          <div data-item-categoria={post.data.category} data-item-autor={post.data.author.join(" ")}>
             <PostCard post={post} />
           </div>
         ))}

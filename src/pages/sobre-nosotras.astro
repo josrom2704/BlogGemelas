@@ -1,78 +1,88 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Corazon from "../components/Corazon.astro";
-import { autoras, loQueCompartimos, site } from "../config";
+import { colaboradores, idsIntegrantes, loQueCompartimos, personas, site, type AutorId } from "../config";
+
+const idsColaboradores = Object.keys(colaboradores) as AutorId[];
 ---
 
-<BaseLayout title="Sobre nosotras" description={`Conoce a las hermanas detrás de ${site.nombre}: gustos, sueños y lo que comparten.`}>
+<BaseLayout title="Sobre nosotras" description={`Conoce a la delegación detrás de ${site.nombre}: quiénes somos, qué nos gusta y qué soñamos.`}>
   <section class="seccion contenedor">
     <header class="centro sobre__intro">
       <h1 class="titulo-brocha">Sobre nosotras</h1>
       <p class="texto-suave">
-        Somos gemelas, pero desde acá cada quien escribe con su propia voz. Esta página es para que nos conozcas un poco mejor.
+        Somos cuatro compañeras que representan a El Salvador en HMUN 2027. Cada una escribe con su propia voz, y esta página es para que nos conozcas un poco mejor.
       </p>
     </header>
 
-    <div class="grid-2 sobre__gemelas">
-      <article id="fernanda" class="tarjeta sobre__tarjeta" style={`--acento: ${autoras.fernanda.color}`}>
-        <div class="sobre__encabezado">
-          <div class="sobre__avatar" style={`background:${autoras.fernanda.color}`}>
-            <img
-              src={autoras.fernanda.foto}
-              alt={autoras.fernanda.nombre}
-              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-            />
-            <span class="sobre__inicial" style="display:none;">{autoras.fernanda.inicial}</span>
-          </div>
-          <div>
-            <h2>{autoras.fernanda.nombre}</h2>
-            <p class="sobre__frase texto-suave">"{autoras.fernanda.frase}"</p>
-          </div>
-        </div>
+    <div class="sobre__grid">
+      {idsIntegrantes.map((id) => {
+        const persona = personas[id];
+        return (
+          <article id={id} class="tarjeta sobre__tarjeta" style={`--acento: ${persona.color}`}>
+            <div class="sobre__encabezado">
+              <div class="sobre__avatar" style={`background:${persona.color}`}>
+                {persona.foto && (
+                  <img
+                    src={persona.foto}
+                    alt={persona.nombre}
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                  />
+                )}
+                <span class="sobre__inicial" style={persona.foto ? "display:none;" : "display:flex;"}>{persona.inicial}</span>
+              </div>
+              <div>
+                <h2>{persona.nombre}</h2>
+                {persona.frase && <p class="sobre__frase texto-suave">"{persona.frase}"</p>}
+              </div>
+            </div>
 
-        <h3 class="sobre__subtitulo">Le gusta</h3>
-        <ul class="sobre__lista">
-          {autoras.fernanda.gustos.map((g) => <li>{g}</li>)}
-        </ul>
+            {persona.gustos && persona.gustos.length > 0 && (
+              <>
+                <h3 class="sobre__subtitulo">Le gusta</h3>
+                <ul class="sobre__lista">
+                  {persona.gustos.map((g) => <li>{g}</li>)}
+                </ul>
+              </>
+            )}
 
-        <h3 class="sobre__subtitulo">Sueña con</h3>
-        <ul class="sobre__lista">
-          {autoras.fernanda.suenos.map((s) => <li>{s}</li>)}
-        </ul>
+            {persona.suenos && persona.suenos.length > 0 && (
+              <>
+                <h3 class="sobre__subtitulo">Sueña con</h3>
+                <ul class="sobre__lista">
+                  {persona.suenos.map((s) => <li>{s}</li>)}
+                </ul>
+              </>
+            )}
 
-        <a class="sobre__ver-posts" href="/blog/?autor=fernanda">Ver sus posts →</a>
-      </article>
-
-      <article id="jimena" class="tarjeta sobre__tarjeta" style={`--acento: ${autoras.jimena.color}`}>
-        <div class="sobre__encabezado">
-          <div class="sobre__avatar" style={`background:${autoras.jimena.color}`}>
-            <img
-              src={autoras.jimena.foto}
-              alt={autoras.jimena.nombre}
-              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-            />
-            <span class="sobre__inicial" style="display:none;">{autoras.jimena.inicial}</span>
-          </div>
-          <div>
-            <h2>{autoras.jimena.nombre}</h2>
-            <p class="sobre__frase texto-suave">"{autoras.jimena.frase}"</p>
-          </div>
-        </div>
-
-        <h3 class="sobre__subtitulo">Le gusta</h3>
-        <ul class="sobre__lista">
-          {autoras.jimena.gustos.map((g) => <li>{g}</li>)}
-        </ul>
-
-        <h3 class="sobre__subtitulo">Sueña con</h3>
-        <ul class="sobre__lista">
-          {autoras.jimena.suenos.map((s) => <li>{s}</li>)}
-        </ul>
-
-        <a class="sobre__ver-posts" href="/blog/?autor=jimena">Ver sus posts →</a>
-      </article>
+            <a class="sobre__ver-posts" href={`/blog/?autor=${id}`}>Ver sus posts →</a>
+          </article>
+        );
+      })}
     </div>
   </section>
+
+  {idsColaboradores.length > 0 && (
+    <section class="seccion contenedor colaboradores">
+      <h2 class="titulo-brocha centro">Quienes nos acompañan</h2>
+      <p class="texto-suave centro">Personas que colaboran con el proyecto y también escriben en el blog.</p>
+      <ul class="colaboradores__lista">
+        {idsColaboradores.map((id) => {
+          const persona = personas[id];
+          return (
+            <li id={id} class="tarjeta colaboradores__item">
+              <span class="badge-autora__circulo colaboradores__circulo" style={`background:${persona.color}`}>{persona.inicial}</span>
+              <div>
+                <strong>{persona.nombre}</strong>
+                <span class="texto-suave">{persona.rol}</span>
+              </div>
+              <a href={`/blog/?autor=${id}`}>Ver sus posts →</a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
 
   <section class="compartimos">
     <div class="contenedor centro">
@@ -90,7 +100,10 @@ import { autoras, loQueCompartimos, site } from "../config";
     margin: 0 auto 2.5rem;
   }
 
-  .sobre__gemelas {
+  .sobre__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 1.5rem;
     align-items: stretch;
   }
 
@@ -169,6 +182,39 @@ import { autoras, loQueCompartimos, site } from "../config";
     font-weight: 800;
     color: var(--acento);
     font-size: 0.9rem;
+  }
+
+  .colaboradores__lista {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem auto 0;
+    max-width: 720px;
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .colaboradores__item {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .colaboradores__item div {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .colaboradores__item a {
+    font-weight: 800;
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+
+  .colaboradores__circulo {
+    width: 2.6rem;
+    height: 2.6rem;
   }
 
   .compartimos {

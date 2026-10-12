@@ -1,7 +1,7 @@
 ---
 // Editor de posts del panel. Se usa tanto para crear (sin `post`) como para
 // editar (con `post`). Envía el formulario a la API con fetch.
-import { categorias } from "../../config";
+import { categorias, colaboradores, idsIntegrantes, personas, type AutorId } from "../../config";
 import type { AutorPanel } from "../../lib/auth";
 import type { PostRepo } from "../../lib/admin/posts-repo";
 import { PORTADA_POR_DEFECTO } from "../../lib/admin/posts-repo";
@@ -14,7 +14,11 @@ interface Props {
 const { autorSesion, post } = Astro.props;
 const datos = post?.datos;
 const esEdicion = Boolean(post);
-const autorElegido = datos?.author ?? autorSesion;
+const autoresElegidos: AutorId[] = datos?.author ?? [autorSesion];
+const gruposAutores = [
+  { titulo: "Delegación", ids: idsIntegrantes as AutorId[] },
+  { titulo: "Colaboradores", ids: Object.keys(colaboradores) as AutorId[] },
+].filter((grupo) => grupo.ids.length > 0);
 const tienePortadaPropia = datos && datos.cover !== PORTADA_POR_DEFECTO;
 ---
 
@@ -26,23 +30,27 @@ const tienePortadaPropia = datos && datos.cover !== PORTADA_POR_DEFECTO;
 >
   {esEdicion && <input type="hidden" name="sha" value={post!.sha} />}
 
-  <div class="form-post__grid">
-    <label class="form-post__campo">
-      <span>Autora</span>
-      <select name="autor" required>
-        <option value="fernanda" selected={autorElegido === "fernanda"}>María Fernanda</option>
-        <option value="jimena" selected={autorElegido === "jimena"}>María Jimena</option>
-        <option value="ambas" selected={autorElegido === "ambas"}>Las dos</option>
-      </select>
-    </label>
+  <fieldset class="form-post__autores">
+    <legend>Escrito por <small class="texto-suave">(marca a todas las personas que participaron)</small></legend>
+    {gruposAutores.map((grupo) => (
+      <div class="form-post__autores-grupo">
+        {gruposAutores.length > 1 && <span class="form-post__autores-titulo">{grupo.titulo}</span>}
+        {grupo.ids.map((id) => (
+          <label class="form-post__autor" style={`--color-persona: ${personas[id].color}`}>
+            <input type="checkbox" name="autores" value={id} checked={autoresElegidos.includes(id)} />
+            <span>{personas[id].nombre}</span>
+          </label>
+        ))}
+      </div>
+    ))}
+  </fieldset>
 
-    <label class="form-post__campo">
-      <span>Categoría</span>
-      <select name="categoria" required>
-        {categorias.map((cat) => <option value={cat} selected={datos?.category === cat}>{cat}</option>)}
-      </select>
-    </label>
-  </div>
+  <label class="form-post__campo">
+    <span>Categoría</span>
+    <select name="categoria" required>
+      {categorias.map((cat) => <option value={cat} selected={datos?.category === cat}>{cat}</option>)}
+    </select>
+  </label>
 
   <label class="form-post__campo">
     <span>Título</span>
@@ -170,6 +178,58 @@ const tienePortadaPropia = datos && datos.cover !== PORTADA_POR_DEFECTO;
   .form-post__campo textarea:focus {
     outline: none;
     border-color: var(--color-fernanda);
+  }
+
+  .form-post__autores {
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .form-post__autores legend {
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-post__autores-grupo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .form-post__autores-titulo {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-texto-suave);
+    width: 100%;
+  }
+
+  .form-post__autor {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.85rem;
+    border: 2px solid var(--color-rosa);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .form-post__autor:has(input:checked) {
+    border-color: var(--color-persona);
+    background: color-mix(in srgb, var(--color-persona) 10%, white);
+  }
+
+  .form-post__autor input {
+    accent-color: var(--color-persona);
   }
 
   .form-post__portada {
@@ -407,6 +467,10 @@ const tienePortadaPropia = datos && datos.cover !== PORTADA_POR_DEFECTO;
 
   formulario.addEventListener("submit", async (evento) => {
     evento.preventDefault();
+    if (!formulario.querySelector('input[name="autores"]:checked')) {
+      mostrarMensaje("Marca al menos una persona en \"Escrito por\".", "error");
+      return;
+    }
     botonEnviar.disabled = true;
     botonEnviar.textContent = "Guardando...";
     mensaje.hidden = true;

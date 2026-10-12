@@ -6,7 +6,7 @@ cover: "/images/hmun-flyer.jpeg"
 coverAlt: "Flyer de la delegación de El Salvador para HMUN 2027"
 category: "HMUN 2027"
 tags: ["hmun", "harvard", "noticia", "el-salvador"]
-author: "ambas"
+author: ["fernanda", "jimena"]
 ---
 
 Todavía no lo podemos creer del todo, así que lo vamos a escribir para que quede constancia: **fuimos aceptadas como Delegación de El Salvador en el Harvard Model United Nations 2027**. Sí, Harvard. Sí, nosotras.

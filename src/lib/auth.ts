@@ -1,6 +1,8 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { getSecret } from "astro:env/server";
+import { idsAutores, personas, type AutorId } from "../config";
 
-export type AutorPanel = "fernanda" | "jimena";
+export type AutorPanel = AutorId;
 
 interface Cuenta {
   usuario: string;
@@ -11,25 +13,26 @@ interface Cuenta {
 
 const DURACION_SESION_MS = 1000 * 60 * 60 * 24 * 14; // 14 días
 
+/** Prefijo de las variables de cada persona: "fernanda" → FERNANDA_USER / FERNANDA_PASS. */
+export function prefijoVariables(autor: AutorPanel): string {
+  return autor.toUpperCase().replace(/[^A-Z0-9]/g, "_");
+}
+
+/** Cuentas del panel: cada persona de config.ts que tenga usuario y contraseña configurados. */
 function cuentas(): Cuenta[] {
-  return [
-    {
-      usuario: import.meta.env.FERNANDA_USER ?? "",
-      password: import.meta.env.FERNANDA_PASS ?? "",
-      autor: "fernanda",
-      nombre: "María Fernanda",
-    },
-    {
-      usuario: import.meta.env.JIMENA_USER ?? "",
-      password: import.meta.env.JIMENA_PASS ?? "",
-      autor: "jimena",
-      nombre: "María Jimena",
-    },
-  ];
+  return idsAutores.map((autor) => {
+    const prefijo = prefijoVariables(autor);
+    return {
+      usuario: getSecret(`${prefijo}_USER`) ?? "",
+      password: getSecret(`${prefijo}_PASS`) ?? "",
+      autor,
+      nombre: personas[autor].nombre,
+    };
+  });
 }
 
 function secretoSesion(): string {
-  const secreto = import.meta.env.SESSION_SECRET;
+  const secreto = getSecret("SESSION_SECRET");
   if (!secreto) {
     throw new Error("Falta configurar la variable de entorno SESSION_SECRET.");
   }
@@ -66,8 +69,9 @@ export function verificarTokenSesion(token: string | undefined | null): AutorPan
   const partes = token.split(".");
   if (partes.length !== 3) return null;
 
-  const [autor, expiraTexto, firma] = partes;
-  if (autor !== "fernanda" && autor !== "jimena") return null;
+  const [autorTexto, expiraTexto, firma] = partes;
+  if (!(idsAutores as string[]).includes(autorTexto)) return null;
+  const autor = autorTexto as AutorPanel;
 
   const firmaEsperada = createHmac("sha256", secretoSesion()).update(`${autor}.${expiraTexto}`).digest("hex");
   if (!comparacionSegura(firma, firmaEsperada)) return null;
@@ -81,5 +85,5 @@ export function verificarTokenSesion(token: string | undefined | null): AutorPan
 export const DURACION_COOKIE_SEGUNDOS = DURACION_SESION_MS / 1000;
 
 export function nombrePorAutor(autor: AutorPanel): string {
-  return cuentas().find((c) => c.autor === autor)?.nombre ?? autor;
+  return personas[autor]?.nombre ?? autor;
 }

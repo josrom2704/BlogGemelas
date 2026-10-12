@@ -2,16 +2,18 @@
 // blog: cada cambio hecho desde el panel es un commit, y Vercel vuelve a
 // desplegar el sitio automáticamente.
 
+import { getSecret } from "astro:env/server";
+
 const API = "https://api.github.com";
 
-function envRequerido(nombre: keyof ImportMetaEnv): string {
-  const valor = import.meta.env[nombre];
+function envRequerido(nombre: string): string {
+  const valor = getSecret(nombre);
   if (!valor) throw new Error(`Falta configurar la variable de entorno ${nombre}.`);
   return valor;
 }
 
 function rama(): string {
-  return import.meta.env.GITHUB_BRANCH || "main";
+  return getSecret("GITHUB_BRANCH") || "main";
 }
 
 function urlRepo(sufijo: string): string {
