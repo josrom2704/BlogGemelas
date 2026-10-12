@@ -1,0 +1,39 @@
+---
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+import FormularioPost from "../../../components/admin/FormularioPost.astro";
+import { obtenerPost, type PostRepo } from "../../../lib/admin/posts-repo";
+
+export const prerender = false;
+
+const autorSesion = Astro.locals.autor!;
+let post: PostRepo | null;
+try {
+  post = await obtenerPost(Astro.params.slug ?? "");
+} catch (error) {
+  console.error("[panel]", error);
+  return Astro.redirect("/admin?error=github");
+}
+if (!post) {
+  return Astro.redirect("/admin?error=no-encontrado");
+}
+---
+
+<AdminLayout title={`Editar: ${post.datos.title}`} mostrarSalir>
+  <a href="/admin" class="volver">← Volver a mis posts</a>
+  <h1 class="titulo-brocha">Editar post</h1>
+  <p class="texto-suave">
+    La dirección del post no cambia aunque cambies el título:
+    <a href={`/blog/${post.slug}/`} target="_blank" rel="noopener">/blog/{post.slug}/</a>
+  </p>
+  <FormularioPost autorSesion={autorSesion} post={post} />
+</AdminLayout>
+
+<style>
+  .volver {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--color-texto-suave);
+  }
+</style>

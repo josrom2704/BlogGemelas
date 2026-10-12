@@ -7,15 +7,16 @@
 export type AutorId = "fernanda" | "jimena" | "ambas";
 
 export const site = {
-  // Nombre del blog. Propuestas en el README: "Dos Veces Soñadoras",
-  // "Doble Sueño", "Fer & Jime". Cambia este valor por el que elijan.
-  nombre: "Dos Veces Soñadoras",
+  // Nombre corto del blog (logo, pestaña del navegador, RSS).
+  nombre: "DEMUNES",
+  // Significado de las siglas, se muestra junto al nombre.
+  nombreCompleto: "MUN El Salvador",
   lema: "Dos hermanas, un mismo sueño",
   descripcion:
-    "El diario de María Fernanda y María Jimena: lo que viven, lo que sueñan y el camino hacia el Harvard Model United Nations 2027.",
+    "DEMUNES (MUN El Salvador) es el diario de María Fernanda y María Jimena: lo que viven, lo que sueñan y el camino hacia el Harvard Model United Nations 2027.",
   idioma: "es",
   // URL final del sitio (debe coincidir con "site" en astro.config.mjs).
-  url: "https://dosveces.example.com",
+  url: "https://blogfjrm.vercel.app",
 };
 
 export const autoras: Record<

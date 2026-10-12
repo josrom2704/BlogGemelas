@@ -1,0 +1,89 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { verificarTokenSesion } from "../../lib/auth";
+
+export const prerender = false;
+
+const sesionActual = verificarTokenSesion(Astro.cookies.get("session")?.value);
+if (sesionActual) {
+  return Astro.redirect("/admin");
+}
+
+const hayError = Astro.url.searchParams.get("error") === "1";
+---
+
+<AdminLayout title="Iniciar sesión">
+  <div class="login">
+    <h1 class="titulo-brocha">Panel de publicación</h1>
+    <p class="texto-suave">Solo María Fernanda y María Jimena pueden entrar aquí.</p>
+
+    {hayError && (
+      <p class="login__error">Usuario o contraseña incorrectos. Intenta de nuevo.</p>
+    )}
+
+    <form class="login__form" method="POST" action="/api/login">
+      <label class="login__campo">
+        <span>Usuario</span>
+        <input type="text" name="usuario" autocomplete="username" required />
+      </label>
+      <label class="login__campo">
+        <span>Contraseña</span>
+        <input type="password" name="password" autocomplete="current-password" required />
+      </label>
+      <button class="boton boton-primario login__boton" type="submit">Entrar</button>
+    </form>
+  </div>
+</AdminLayout>
+
+<style>
+  .login {
+    background: white;
+    border-radius: var(--radio-tarjeta);
+    box-shadow: var(--sombra-suave);
+    padding: 2.5rem;
+    text-align: center;
+  }
+
+  .login__error {
+    background: var(--color-fernanda-suave);
+    color: var(--color-fernanda);
+    font-weight: 700;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    margin: 1rem 0;
+  }
+
+  .login__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    margin-top: 1.5rem;
+    text-align: left;
+  }
+
+  .login__campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .login__campo input {
+    font-family: var(--font-texto);
+    font-size: 1rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: 12px;
+    border: 2px solid var(--color-rosa);
+  }
+
+  .login__campo input:focus {
+    outline: none;
+    border-color: var(--color-fernanda);
+  }
+
+  .login__boton {
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+</style>

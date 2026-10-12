@@ -15,7 +15,7 @@ const {
   articulo = false,
 } = Astro.props;
 
-const tituloCompleto = title === site.nombre ? title : `${title} · ${site.nombre}`;
+const tituloCompleto = title.startsWith(site.nombre) ? title : `${title} · ${site.nombre}`;
 const urlCanonica = new URL(Astro.url.pathname, Astro.site ?? site.url);
 const urlImagen = new URL(image, Astro.site ?? site.url);
 ---

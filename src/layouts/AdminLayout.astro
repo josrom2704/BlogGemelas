@@ -1,0 +1,119 @@
+---
+import "../styles/global.css";
+import { site } from "../config";
+
+interface Props {
+  title: string;
+  mostrarSalir?: boolean;
+  ancho?: "normal" | "amplio";
+}
+
+const { title, mostrarSalir = false, ancho = "normal" } = Astro.props;
+const ruta = Astro.url.pathname.replace(/\/+$/, "");
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title} · Panel · {site.nombre}</title>
+  </head>
+  <body class="admin-body">
+    <header class="admin-header">
+      <a href="/admin" class="admin-header__marca">{site.nombre} <small>Panel</small></a>
+      <div class="admin-header__acciones">
+        {mostrarSalir && (
+          <>
+            <a href="/admin" class:list={["admin-header__enlace", { activo: ruta === "/admin" }]}>Mis posts</a>
+            <a href="/admin/nuevo" class:list={["admin-header__enlace", { activo: ruta === "/admin/nuevo" }]}>Nuevo post</a>
+          </>
+        )}
+        <a href="/" class="admin-header__enlace" target="_blank" rel="noopener">Ver el sitio ↗</a>
+        {mostrarSalir && (
+          <form method="POST" action="/api/logout">
+            <button class="admin-header__salir" type="submit">Cerrar sesión</button>
+          </form>
+        )}
+      </div>
+    </header>
+    <main class:list={["admin-main", { "admin-main--amplio": ancho === "amplio" }]}>
+      <slot />
+    </main>
+
+    <style>
+      .admin-body {
+        min-height: 100vh;
+        background: var(--color-crema);
+      }
+
+      .admin-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        background: white;
+        border-bottom: 2px solid var(--color-rosa);
+      }
+
+      .admin-header__marca {
+        font-family: var(--font-manuscrita);
+        font-size: 1.4rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: var(--color-texto);
+      }
+
+      .admin-header__marca small {
+        font-family: var(--font-texto);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--color-texto-suave);
+      }
+
+      .admin-header__acciones {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 1rem;
+      }
+
+      .admin-header__enlace.activo {
+        color: var(--color-fernanda);
+      }
+
+      .admin-header__enlace {
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--color-texto-suave);
+      }
+
+      .admin-header__salir {
+        font-family: var(--font-texto);
+        font-weight: 700;
+        font-size: 0.85rem;
+        background: none;
+        border: 2px solid var(--color-rosa);
+        border-radius: 999px;
+        padding: 0.4rem 1rem;
+        cursor: pointer;
+        color: var(--color-fernanda);
+      }
+
+      .admin-main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 2.5rem 1.25rem 4rem;
+      }
+
+      .admin-main--amplio {
+        max-width: 960px;
+      }
+    </style>
+  </body>
+</html>

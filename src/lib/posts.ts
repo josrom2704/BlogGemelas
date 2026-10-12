@@ -23,3 +23,13 @@ export function formatearFecha(fecha: Date): string {
     year: "numeric",
   }).format(fecha);
 }
+
+export function generarSlug(titulo: string): string {
+  return titulo
+    .normalize("NFD")
+    .replace(new RegExp("[\\u0300-\\u036f]", "g"), "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+}

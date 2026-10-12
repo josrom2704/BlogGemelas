@@ -1,0 +1,16 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import FormularioPost from "../../components/admin/FormularioPost.astro";
+
+export const prerender = false;
+
+const autorSesion = Astro.locals.autor!;
+---
+
+<AdminLayout title="Nuevo post" mostrarSalir>
+  <h1 class="titulo-brocha">Nuevo post</h1>
+  <p class="texto-suave">
+    Al publicarlo se guarda en el repositorio y el sitio se actualiza solo en uno o dos minutos.
+  </p>
+  <FormularioPost autorSesion={autorSesion} />
+</AdminLayout>

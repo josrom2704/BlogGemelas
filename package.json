@@ -1,5 +1,5 @@
 {
-  "name": "blog-fernanda-jimena",
+  "name": "demunes",
   "type": "module",
   "version": "0.0.1",
   "engines": {
@@ -14,6 +14,7 @@
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
+    "@astrojs/vercel": "^11.0.11",
     "astro": "^7.3.5"
   },
   "allowScripts": {

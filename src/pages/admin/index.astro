@@ -1,0 +1,299 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { nombrePorAutor } from "../../lib/auth";
+import { listarPosts, type PostRepo } from "../../lib/admin/posts-repo";
+import { mensajeDeError } from "../../lib/admin/respuestas";
+import { autoras } from "../../config";
+import { formatearFecha } from "../../lib/posts";
+
+export const prerender = false;
+
+const autorSesion = Astro.locals.autor!;
+const nombreVisible = nombrePorAutor(autorSesion);
+
+let posts: PostRepo[] = [];
+let errorCarga = "";
+try {
+  posts = await listarPosts();
+} catch (error) {
+  console.error("[panel]", error);
+  errorCarga = mensajeDeError(error);
+}
+
+const publicados = posts.filter((p) => !p.datos.draft).length;
+const borradores = posts.length - publicados;
+
+const parametros = Astro.url.searchParams;
+const avisos: Record<string, string> = {
+  creado: "¡Listo! El post se guardó.",
+  editado: "¡Listo! Los cambios se guardaron.",
+};
+const avisoClave = Object.keys(avisos).find((clave) => parametros.has(clave));
+const noEncontrado = parametros.get("error") === "no-encontrado";
+const errorAlAbrir = parametros.get("error") === "github";
+
+function nombreAutora(autor: PostRepo["datos"]["author"]): string {
+  return autor === "ambas" ? "Las dos" : autoras[autor].nombre;
+}
+
+function fechaLegible(fecha: string): string {
+  return formatearFecha(new Date(`${fecha}T12:00:00`));
+}
+---
+
+<AdminLayout title="Mis posts" mostrarSalir ancho="amplio">
+  <div class="cabecera">
+    <div>
+      <h1 class="titulo-brocha">¡Hola, {nombreVisible}!</h1>
+      {!errorCarga && (
+        <p class="texto-suave">
+          {posts.length} posts · {publicados} publicados · {borradores} borradores
+        </p>
+      )}
+    </div>
+    <a href="/admin/nuevo" class="boton boton-primario">+ Nuevo post</a>
+  </div>
+
+  {avisoClave && (
+    <p class="aviso aviso--ok">
+      {avisos[avisoClave]} El sitio se actualiza solo en uno o dos minutos.
+    </p>
+  )}
+  {noEncontrado && <p class="aviso aviso--error">Ese post no existe o fue eliminado.</p>}
+  {errorAlAbrir && !errorCarga && <p class="aviso aviso--error">No se pudo abrir el post. Intenta de nuevo.</p>}
+  {errorCarga && (
+    <p class="aviso aviso--error">
+      No se pudieron cargar los posts.
+      <small>{errorCarga}</small>
+    </p>
+  )}
+  <p id="aviso-accion" class="aviso" role="status" hidden></p>
+
+  {!errorCarga && posts.length === 0 && (
+    <p class="vacio texto-suave">Todavía no hay posts. ¡Escribe el primero!</p>
+  )}
+
+  <ul class="lista">
+    {posts.map((post) => (
+      <li class="fila" data-slug={post.slug}>
+        <img class="fila__portada" src={post.datos.cover} alt="" loading="lazy" />
+        <div class="fila__info">
+          <span class:list={["estado", post.datos.draft ? "estado--borrador" : "estado--publicado"]}>
+            {post.datos.draft ? "Borrador" : "Publicado"}
+          </span>
+          <h2 class="fila__titulo">{post.datos.title}</h2>
+          <p class="fila__meta texto-suave">
+            {fechaLegible(post.datos.date)} · {nombreAutora(post.datos.author)} · {post.datos.category}
+          </p>
+        </div>
+        <div class="fila__acciones">
+          <a class="accion" href={`/admin/editar/${post.slug}`}>Editar</a>
+          {!post.datos.draft && (
+            <a class="accion" href={`/blog/${post.slug}/`} target="_blank" rel="noopener">Ver</a>
+          )}
+          <button class="accion" type="button" data-accion="borrador" data-borrador={String(!post.datos.draft)}>
+            {post.datos.draft ? "Publicar" : "Pasar a borrador"}
+          </button>
+          <button class="accion accion--peligro" type="button" data-accion="eliminar" data-titulo={post.datos.title}>
+            Eliminar
+          </button>
+        </div>
+      </li>
+    ))}
+  </ul>
+</AdminLayout>
+
+<style>
+  .cabecera {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .aviso {
+    padding: 0.9rem 1.1rem;
+    border-radius: 12px;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+  }
+
+  .aviso small {
+    display: block;
+    font-weight: 400;
+    margin-top: 0.4rem;
+    word-break: break-word;
+  }
+
+  .aviso--ok {
+    background: #e3f5e6;
+    color: #1f7a37;
+  }
+
+  .aviso--error {
+    background: var(--color-fernanda-suave);
+    color: var(--color-fernanda);
+  }
+
+  .vacio {
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+
+  .lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .fila {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    align-items: center;
+    gap: 1.1rem;
+    background: white;
+    padding: 0.9rem;
+    border-radius: 18px;
+    box-shadow: var(--sombra-suave);
+  }
+
+  .fila[aria-busy="true"] {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .fila__portada {
+    width: 120px;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 12px;
+    background: var(--color-rosa);
+  }
+
+  .fila__titulo {
+    font-family: var(--font-texto);
+    font-size: 1.05rem;
+    margin: 0.3rem 0 0.2rem;
+  }
+
+  .fila__meta {
+    font-size: 0.85rem;
+    margin: 0;
+  }
+
+  .estado {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+  }
+
+  .estado--publicado {
+    background: #e3f5e6;
+    color: #1f7a37;
+  }
+
+  .estado--borrador {
+    background: var(--color-azul-claro);
+    color: var(--color-jimena);
+  }
+
+  .fila__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.4rem;
+  }
+
+  .accion {
+    font-family: var(--font-texto);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    background: none;
+    border: 2px solid var(--color-rosa);
+    border-radius: 999px;
+    padding: 0.3rem 0.8rem;
+    cursor: pointer;
+    color: var(--color-texto);
+  }
+
+  .accion:hover {
+    border-color: var(--color-fernanda);
+  }
+
+  .accion--peligro {
+    color: var(--color-fernanda);
+  }
+
+  @media (max-width: 700px) {
+    .fila {
+      grid-template-columns: 84px 1fr;
+    }
+
+    .fila__portada {
+      width: 84px;
+    }
+
+    .fila__acciones {
+      grid-column: 1 / -1;
+      justify-content: flex-start;
+    }
+  }
+</style>
+
+<script>
+  const aviso = document.getElementById("aviso-accion") as HTMLParagraphElement;
+
+  function mostrarAviso(texto: string, tipo: "ok" | "error") {
+    aviso.textContent = texto;
+    aviso.className = `aviso aviso--${tipo}`;
+    aviso.hidden = false;
+    aviso.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  async function ejecutar(fila: HTMLElement, init: RequestInit): Promise<boolean> {
+    fila.setAttribute("aria-busy", "true");
+    try {
+      const respuesta = await fetch(`/api/posts/${fila.dataset.slug}`, init);
+      const resultado = await respuesta.json().catch(() => ({}));
+      if (!respuesta.ok || !resultado.ok) throw new Error(resultado.mensaje ?? "No se pudo completar la acción.");
+      return true;
+    } catch (error) {
+      mostrarAviso(error instanceof Error ? error.message : "Ocurrió un error inesperado.", "error");
+      fila.removeAttribute("aria-busy");
+      return false;
+    }
+  }
+
+  document.querySelectorAll<HTMLButtonElement>("[data-accion]").forEach((boton) => {
+    boton.addEventListener("click", async () => {
+      const fila = boton.closest<HTMLElement>(".fila")!;
+
+      if (boton.dataset.accion === "eliminar") {
+        if (!confirm(`¿Eliminar "${boton.dataset.titulo}"? Esta acción no se puede deshacer desde el panel.`)) return;
+        if (await ejecutar(fila, { method: "DELETE" })) {
+          fila.remove();
+          mostrarAviso("Post eliminado. El sitio se actualiza en uno o dos minutos.", "ok");
+        }
+        return;
+      }
+
+      const borrador = boton.dataset.borrador === "true";
+      const ok = await ejecutar(fila, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ borrador }),
+      });
+      if (ok) location.reload();
+    });
+  });
+</script>

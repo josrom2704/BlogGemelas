@@ -1,0 +1,450 @@
+---
+// Editor de posts del panel. Se usa tanto para crear (sin `post`) como para
+// editar (con `post`). Envía el formulario a la API con fetch.
+import { categorias } from "../../config";
+import type { AutorPanel } from "../../lib/auth";
+import type { PostRepo } from "../../lib/admin/posts-repo";
+import { PORTADA_POR_DEFECTO } from "../../lib/admin/posts-repo";
+
+interface Props {
+  autorSesion: AutorPanel;
+  post?: PostRepo;
+}
+
+const { autorSesion, post } = Astro.props;
+const datos = post?.datos;
+const esEdicion = Boolean(post);
+const autorElegido = datos?.author ?? autorSesion;
+const tienePortadaPropia = datos && datos.cover !== PORTADA_POR_DEFECTO;
+---
+
+<form
+  id="form-post"
+  class="form-post"
+  data-url={esEdicion ? `/api/posts/${post!.slug}` : "/api/posts"}
+  data-metodo={esEdicion ? "PUT" : "POST"}
+>
+  {esEdicion && <input type="hidden" name="sha" value={post!.sha} />}
+
+  <div class="form-post__grid">
+    <label class="form-post__campo">
+      <span>Autora</span>
+      <select name="autor" required>
+        <option value="fernanda" selected={autorElegido === "fernanda"}>María Fernanda</option>
+        <option value="jimena" selected={autorElegido === "jimena"}>María Jimena</option>
+        <option value="ambas" selected={autorElegido === "ambas"}>Las dos</option>
+      </select>
+    </label>
+
+    <label class="form-post__campo">
+      <span>Categoría</span>
+      <select name="categoria" required>
+        {categorias.map((cat) => <option value={cat} selected={datos?.category === cat}>{cat}</option>)}
+      </select>
+    </label>
+  </div>
+
+  <label class="form-post__campo">
+    <span>Título</span>
+    <input type="text" name="titulo" required maxlength="120" value={datos?.title} placeholder="Un título para el post" />
+  </label>
+
+  <label class="form-post__campo">
+    <span>Descripción corta</span>
+    <textarea name="descripcion" required maxlength="220" rows="2" placeholder="Una o dos frases que resuman el post">{datos?.description}</textarea>
+  </label>
+
+  <div class="form-post__grid">
+    <label class="form-post__campo">
+      <span>Etiquetas <small class="texto-suave">(separadas por coma)</small></span>
+      <input type="text" name="tags" value={datos?.tags.join(", ")} placeholder="hmun, recaudacion" />
+    </label>
+
+    {esEdicion && (
+      <label class="form-post__campo">
+        <span>Fecha de publicación</span>
+        <input type="date" name="fecha" value={datos!.date} required />
+      </label>
+    )}
+  </div>
+
+  <fieldset class="form-post__portada">
+    <legend>Imagen de portada</legend>
+    {tienePortadaPropia && (
+      <div class="form-post__portada-actual">
+        <img src={datos!.cover} alt="" loading="lazy" />
+        <label class="form-post__checkbox">
+          <input type="checkbox" name="quitarPortada" />
+          <span>Quitar portada actual</span>
+        </label>
+      </div>
+    )}
+    <label class="form-post__campo">
+      <span>
+        {tienePortadaPropia ? "Reemplazar por otra imagen" : "Subir imagen"}
+        <small class="texto-suave">(JPG, PNG o WEBP; se ajusta el tamaño automáticamente)</small>
+      </span>
+      <input type="file" name="portada" accept="image/jpeg,image/png,image/webp" />
+    </label>
+    <label class="form-post__campo">
+      <span>Descripción de la imagen <small class="texto-suave">(para accesibilidad)</small></span>
+      <input type="text" name="portadaAlt" maxlength="160" value={datos?.coverAlt} placeholder="Ej.: Nosotras con la bandera de El Salvador" />
+    </label>
+  </fieldset>
+
+  <div class="form-post__campo">
+    <span>Contenido <small class="texto-suave">(Markdown)</small></span>
+    <div class="editor" role="toolbar" aria-label="Formato del texto">
+      <button type="button" data-formato="negrita" title="Negrita"><b>N</b></button>
+      <button type="button" data-formato="cursiva" title="Cursiva"><i>C</i></button>
+      <button type="button" data-formato="subtitulo" title="Subtítulo">H2</button>
+      <button type="button" data-formato="lista" title="Lista">• Lista</button>
+      <button type="button" data-formato="cita" title="Cita">❝ Cita</button>
+      <button type="button" data-formato="enlace" title="Enlace">🔗 Enlace</button>
+      <button type="button" id="boton-imagen" title="Insertar imagen">🖼️ Imagen</button>
+      <input type="file" id="input-imagen" accept="image/jpeg,image/png,image/webp" hidden />
+    </div>
+    <textarea name="contenido" required rows="18" placeholder="Escribe aquí el post completo...">{post?.contenido}</textarea>
+  </div>
+
+  <p class="texto-suave form-post__privacidad">
+    Recordatorio: usa solo nombres de pila. Nada de apellidos, dirección, colegio ni edades exactas.
+  </p>
+
+  <label class="form-post__checkbox">
+    <input type="checkbox" name="borrador" checked={datos ? datos.draft : false} />
+    <span>Guardar como borrador (no se muestra en el blog todavía)</span>
+  </label>
+
+  <div id="form-post__mensaje" class="form-post__mensaje" role="status" hidden></div>
+
+  <button class="boton boton-primario form-post__enviar" type="submit">
+    {esEdicion ? "Guardar cambios" : "Publicar"}
+  </button>
+</form>
+
+<style>
+  .form-post {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    background: white;
+    padding: 2rem;
+    border-radius: var(--radio-tarjeta);
+    box-shadow: var(--sombra-suave);
+  }
+
+  .form-post__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .form-post__campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .form-post__campo input,
+  .form-post__campo select,
+  .form-post__campo textarea {
+    font-family: var(--font-texto);
+    font-size: 1rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 12px;
+    border: 2px solid var(--color-rosa);
+    resize: vertical;
+  }
+
+  .form-post__campo textarea[name="contenido"] {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    line-height: 1.6;
+  }
+
+  .form-post__campo input:focus,
+  .form-post__campo select:focus,
+  .form-post__campo textarea:focus {
+    outline: none;
+    border-color: var(--color-fernanda);
+  }
+
+  .form-post__portada {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border: 2px dashed var(--color-rosa);
+    border-radius: 16px;
+    padding: 1rem 1.25rem 1.25rem;
+  }
+
+  .form-post__portada legend {
+    font-weight: 800;
+    padding: 0 0.4rem;
+  }
+
+  .form-post__portada-actual {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .form-post__portada-actual img {
+    width: 160px;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+
+  .editor {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 0.4rem;
+    border: 2px solid var(--color-rosa);
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+    background: var(--color-crema);
+  }
+
+  .editor button {
+    font-family: var(--font-texto);
+    font-size: 0.85rem;
+    background: white;
+    border: 1px solid var(--color-rosa);
+    border-radius: 8px;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    color: var(--color-texto);
+  }
+
+  .editor button:hover {
+    border-color: var(--color-fernanda);
+  }
+
+  .form-post__privacidad {
+    font-size: 0.85rem;
+    margin: 0;
+  }
+
+  .form-post__checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .form-post__enviar {
+    justify-content: center;
+  }
+
+  .form-post__enviar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .form-post__mensaje {
+    padding: 0.9rem 1.1rem;
+    border-radius: 12px;
+    font-weight: 700;
+  }
+
+  .form-post__mensaje--ok {
+    background: #e3f5e6;
+    color: #1f7a37;
+  }
+
+  .form-post__mensaje--error {
+    background: var(--color-fernanda-suave);
+    color: var(--color-fernanda);
+  }
+
+  @media (max-width: 600px) {
+    .form-post {
+      padding: 1.25rem;
+    }
+
+    .form-post__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Vercel rechaza peticiones de más de ~4.5MB: las imágenes se reducen en el
+  // navegador antes de enviarlas.
+  const MAX_LADO_PX = 1600;
+  const CALIDAD_JPG = 0.82;
+  const MAX_BYTES_ENVIO = 4.2 * 1024 * 1024;
+
+  const formulario = document.getElementById("form-post") as HTMLFormElement;
+  const mensaje = document.getElementById("form-post__mensaje") as HTMLDivElement;
+  const botonEnviar = formulario.querySelector<HTMLButtonElement>(".form-post__enviar")!;
+  const textoBoton = botonEnviar.textContent;
+  const areaContenido = formulario.querySelector<HTMLTextAreaElement>('textarea[name="contenido"]')!;
+  const inputImagen = document.getElementById("input-imagen") as HTMLInputElement;
+  const esEdicion = formulario.dataset.metodo === "PUT";
+
+  /** Imágenes insertadas en el contenido que aún no se han guardado. */
+  const imagenesPendientes = new Map<string, Blob>();
+  let hayCambiosSinGuardar = false;
+
+  function mostrarMensaje(texto: string, tipo: "ok" | "error") {
+    mensaje.textContent = texto;
+    mensaje.hidden = false;
+    mensaje.className = `form-post__mensaje form-post__mensaje--${tipo}`;
+    mensaje.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  async function comprimirImagen(archivo: File): Promise<Blob> {
+    const bitmap = await createImageBitmap(archivo);
+    const escala = Math.min(1, MAX_LADO_PX / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * escala);
+    canvas.height = Math.round(bitmap.height * escala);
+    const ctx = canvas.getContext("2d")!;
+    ctx.fillStyle = "#ffffff"; // Fondo para PNG con transparencia.
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    return new Promise((resolve, reject) =>
+      canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("No se pudo procesar la imagen."))), "image/jpeg", CALIDAD_JPG)
+    );
+  }
+
+  function nombreSeguro(nombreOriginal: string): string {
+    const base = nombreOriginal
+      .replace(/\.[^.]+$/, "")
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 40);
+    const marca = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    return `${marca}${base ? `-${base}` : ""}.jpg`;
+  }
+
+  // --- Barra de formato ------------------------------------------------------
+
+  function envolverSeleccion(antes: string, despues: string, ejemplo: string) {
+    const { selectionStart: inicio, selectionEnd: fin, value } = areaContenido;
+    const seleccion = value.slice(inicio, fin) || ejemplo;
+    areaContenido.setRangeText(`${antes}${seleccion}${despues}`, inicio, fin, "end");
+    areaContenido.focus();
+    areaContenido.setSelectionRange(inicio + antes.length, inicio + antes.length + seleccion.length);
+    hayCambiosSinGuardar = true;
+  }
+
+  function prefijarLineas(prefijo: string, ejemplo: string) {
+    const { selectionStart: inicio, selectionEnd: fin, value } = areaContenido;
+    const inicioLinea = value.lastIndexOf("\n", inicio - 1) + 1;
+    const seleccion = value.slice(inicioLinea, fin) || ejemplo;
+    const resultado = seleccion
+      .split("\n")
+      .map((linea) => `${prefijo}${linea}`)
+      .join("\n");
+    areaContenido.setRangeText(resultado, inicioLinea, fin, "end");
+    areaContenido.focus();
+    hayCambiosSinGuardar = true;
+  }
+
+  function insertarBloque(texto: string) {
+    const { selectionStart: inicio, value } = areaContenido;
+    const separadorAntes = inicio === 0 || value[inicio - 1] === "\n" ? "" : "\n\n";
+    areaContenido.setRangeText(`${separadorAntes}${texto}\n\n`, inicio, inicio, "end");
+    areaContenido.focus();
+    hayCambiosSinGuardar = true;
+  }
+
+  const acciones: Record<string, () => void> = {
+    negrita: () => envolverSeleccion("**", "**", "texto en negrita"),
+    cursiva: () => envolverSeleccion("_", "_", "texto en cursiva"),
+    subtitulo: () => prefijarLineas("## ", "Subtítulo"),
+    lista: () => prefijarLineas("- ", "Elemento de la lista"),
+    cita: () => prefijarLineas("> ", "Una frase destacada"),
+    enlace: () => {
+      const url = prompt("Pega el enlace (https://...)");
+      if (url) envolverSeleccion("[", `](${url})`, "texto del enlace");
+    },
+  };
+
+  formulario.querySelectorAll<HTMLButtonElement>("[data-formato]").forEach((boton) => {
+    boton.addEventListener("click", () => acciones[boton.dataset.formato!]?.());
+  });
+
+  // --- Imágenes dentro del contenido ----------------------------------------
+
+  document.getElementById("boton-imagen")!.addEventListener("click", () => inputImagen.click());
+
+  inputImagen.addEventListener("change", async () => {
+    const archivo = inputImagen.files?.[0];
+    inputImagen.value = "";
+    if (!archivo) return;
+    try {
+      const blob = await comprimirImagen(archivo);
+      const nombre = nombreSeguro(archivo.name);
+      imagenesPendientes.set(nombre, blob);
+      const descripcion = prompt("Describe la imagen en pocas palabras (opcional)") ?? "";
+      insertarBloque(`![${descripcion.replace(/[\[\]]/g, "")}](/images/posts/${nombre})`);
+    } catch (error) {
+      mostrarMensaje(error instanceof Error ? error.message : "No se pudo agregar la imagen.", "error");
+    }
+  });
+
+  // --- Envío -----------------------------------------------------------------
+
+  formulario.addEventListener("input", () => (hayCambiosSinGuardar = true));
+  window.addEventListener("beforeunload", (evento) => {
+    if (hayCambiosSinGuardar) evento.preventDefault();
+  });
+
+  formulario.addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+    botonEnviar.disabled = true;
+    botonEnviar.textContent = "Guardando...";
+    mensaje.hidden = true;
+
+    try {
+      const datos = new FormData(formulario);
+
+      const portada = datos.get("portada");
+      if (portada instanceof File && portada.size > 0) {
+        datos.set("portada", await comprimirImagen(portada), "portada.jpg");
+      }
+      for (const [nombre, blob] of imagenesPendientes) {
+        if (areaContenido.value.includes(nombre)) datos.append("imagenes", blob, nombre);
+      }
+
+      let total = 0;
+      datos.forEach((valor) => (total += valor instanceof Blob ? valor.size : valor.length));
+      if (total > MAX_BYTES_ENVIO) {
+        throw new Error("Hay demasiadas imágenes para guardarlas juntas. Guarda el post con menos imágenes y agrega el resto editándolo después.");
+      }
+
+      const respuesta = await fetch(formulario.dataset.url!, { method: formulario.dataset.metodo, body: datos });
+      const resultado = await respuesta.json().catch(() => ({}));
+      if (respuesta.status === 401) {
+        throw new Error("Tu sesión expiró. Abre /admin/login en otra pestaña, entra de nuevo y vuelve a guardar.");
+      }
+      if (!respuesta.ok || !resultado.ok) {
+        throw new Error(resultado.mensaje ?? "No se pudo guardar el post.");
+      }
+
+      hayCambiosSinGuardar = false;
+      const destino = new URL("/admin", location.origin);
+      destino.searchParams.set(esEdicion ? "editado" : "creado", resultado.slug);
+      location.href = destino.toString();
+    } catch (error) {
+      mostrarMensaje(error instanceof Error ? error.message : "Ocurrió un error inesperado.", "error");
+      botonEnviar.disabled = false;
+      botonEnviar.textContent = textoBoton;
+    }
+  });
+</script>
