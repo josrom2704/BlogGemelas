@@ -15,6 +15,8 @@ export interface DatosPost {
   tags: string[];
   author: AutorId[];
   draft: boolean;
+  galleryTitle?: string;
+  gallery?: { src: string; alt: string }[];
 }
 
 const REGEX_ARCHIVO = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;
@@ -69,6 +71,8 @@ export function parsearPost(texto: string): { datos: DatosPost; contenido: strin
     tags: Array.isArray(campos.tags) ? campos.tags.map(String) : [],
     author: leerAutores(campos.author),
     draft: campos.draft === true,
+    galleryTitle: campos.galleryTitle ? String(campos.galleryTitle) : undefined,
+    gallery: Array.isArray(campos.gallery) ? (campos.gallery as { src: string; alt: string }[]) : undefined,
   };
 
   return { datos, contenido: coincidencia[2].replace(/^\r?\n/, "") };
@@ -87,6 +91,9 @@ export function serializarPost(datos: DatosPost, contenido: string): string {
     `tags: [${datos.tags.map(texto).join(", ")}]`,
     `author: ${datos.author.length === 1 ? texto(datos.author[0]) : `[${datos.author.map(texto).join(", ")}]`}`,
     `draft: ${datos.draft}`,
+    ...(datos.galleryTitle ? [`galleryTitle: ${texto(datos.galleryTitle)}`] : []),
+    // En una sola línea (JSON es YAML válido) para que el lector simple la entienda.
+    ...(datos.gallery?.length ? [`gallery: ${JSON.stringify(datos.gallery)}`] : []),
     "---",
     "",
     contenido.replace(/\r\n/g, "\n").trim(),

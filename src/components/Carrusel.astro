@@ -1,0 +1,328 @@
+---
+// Carrusel de fotos con transición de fundido. Cada foto se muestra a su
+// tamaño natural sobre un fondo desenfocado de sí misma, así funcionan bien
+// fotos verticales, horizontales y de baja resolución.
+
+interface Props {
+  imagenes: { src: string; alt: string }[];
+  titulo?: string;
+  /** Milisegundos entre fotos en el avance automático. */
+  intervalo?: number;
+}
+
+const { imagenes, titulo, intervalo = 4500 } = Astro.props;
+const idTitulo = `carrusel-titulo-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+{imagenes.length > 0 && (
+  <section
+    class="carrusel"
+    aria-roledescription="carrusel"
+    aria-labelledby={titulo ? idTitulo : undefined}
+    aria-label={titulo ? undefined : "Galería de fotos"}
+    data-intervalo={intervalo}
+  >
+    {titulo && <h2 id={idTitulo} class="carrusel__titulo">{titulo}</h2>}
+
+    <div class="carrusel__marco" tabindex="0">
+      {imagenes.map((imagen, i) => (
+        <figure
+          class:list={["carrusel__slide", { activo: i === 0 }]}
+          aria-roledescription="diapositiva"
+          aria-label={`${i + 1} de ${imagenes.length}`}
+          aria-hidden={i === 0 ? "false" : "true"}
+        >
+          <div class="carrusel__fondo" style={`background-image: url('${imagen.src}')`} aria-hidden="true"></div>
+          <img src={imagen.src} alt={imagen.alt} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
+        </figure>
+      ))}
+
+      {imagenes.length > 1 && (
+        <>
+          <button class="carrusel__flecha carrusel__flecha--anterior" type="button" aria-label="Foto anterior">‹</button>
+          <button class="carrusel__flecha carrusel__flecha--siguiente" type="button" aria-label="Foto siguiente">›</button>
+          <span class="carrusel__contador" aria-hidden="true">1 / {imagenes.length}</span>
+          <div class="carrusel__progreso" aria-hidden="true"><span></span></div>
+        </>
+      )}
+    </div>
+
+    {imagenes.length > 1 && (
+      <div class="carrusel__puntos" role="group" aria-label="Elegir foto">
+        {imagenes.map((_, i) => (
+          <button
+            class:list={["carrusel__punto", { activo: i === 0 }]}
+            type="button"
+            aria-label={`Ver foto ${i + 1}`}
+            aria-current={i === 0 ? "true" : undefined}
+          ></button>
+        ))}
+      </div>
+    )}
+
+    <p class="solo-lectura-pantalla carrusel__anuncio" aria-live="polite"></p>
+  </section>
+)}
+
+<style>
+  .carrusel {
+    margin: 3rem 0 1rem;
+  }
+
+  .carrusel__titulo {
+    margin-bottom: 1rem;
+  }
+
+  .carrusel__marco {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radio-tarjeta);
+    overflow: hidden;
+    background: var(--color-jimena);
+    box-shadow: var(--sombra-suave);
+    outline-offset: 4px;
+    touch-action: pan-y;
+  }
+
+  .carrusel__slide {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(1.04);
+    transition:
+      opacity 0.9s ease,
+      transform 1.4s ease;
+    pointer-events: none;
+  }
+
+  .carrusel__slide.activo {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  .carrusel__fondo {
+    position: absolute;
+    inset: -40px;
+    background-size: cover;
+    background-position: center;
+    filter: blur(28px) saturate(1.2) brightness(0.75);
+  }
+
+  /* Nunca se agranda por encima de su tamaño real, para que no se pixele. */
+  .carrusel__slide img {
+    position: relative;
+    width: auto;
+    height: auto;
+    max-width: calc(100% - 2rem);
+    max-height: calc(100% - 2.5rem);
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  .carrusel__flecha {
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--color-texto);
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 0.2rem;
+    opacity: 0;
+    transition:
+      opacity 0.25s ease,
+      background 0.2s ease;
+  }
+
+  .carrusel__marco:hover .carrusel__flecha,
+  .carrusel__marco:focus-within .carrusel__flecha {
+    opacity: 1;
+  }
+
+  .carrusel__flecha:hover {
+    background: white;
+  }
+
+  .carrusel__flecha--anterior {
+    left: 0.9rem;
+  }
+
+  .carrusel__flecha--siguiente {
+    right: 0.9rem;
+  }
+
+  .carrusel__contador {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+    background: rgba(0, 0, 0, 0.45);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+  }
+
+  .carrusel__progreso {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .carrusel__progreso span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--color-rosa);
+  }
+
+  .carrusel__progreso.corriendo span {
+    width: 100%;
+    transition: width var(--duracion, 4500ms) linear;
+  }
+
+  .carrusel__puntos {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .carrusel__punto {
+    width: 0.65rem;
+    height: 0.65rem;
+    padding: 0;
+    border-radius: 999px;
+    border: none;
+    background: var(--color-rosa);
+    cursor: pointer;
+    transition:
+      width 0.3s ease,
+      background 0.3s ease;
+  }
+
+  .carrusel__punto.activo {
+    width: 1.8rem;
+    background: var(--gradiente-ambas);
+  }
+
+  /* En pantallas táctiles las flechas siempre visibles. */
+  @media (hover: none) {
+    .carrusel__flecha {
+      opacity: 1;
+      width: 2.3rem;
+      height: 2.3rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .carrusel__marco {
+      aspect-ratio: 4 / 5;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carrusel__slide,
+    .carrusel__punto {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const reducirMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  document.querySelectorAll<HTMLElement>(".carrusel").forEach((carrusel) => {
+    const slides = [...carrusel.querySelectorAll<HTMLElement>(".carrusel__slide")];
+    if (slides.length < 2) return;
+
+    const marco = carrusel.querySelector<HTMLElement>(".carrusel__marco")!;
+    const puntos = [...carrusel.querySelectorAll<HTMLButtonElement>(".carrusel__punto")];
+    const contador = carrusel.querySelector<HTMLElement>(".carrusel__contador")!;
+    const progreso = carrusel.querySelector<HTMLElement>(".carrusel__progreso")!;
+    const anuncio = carrusel.querySelector<HTMLElement>(".carrusel__anuncio")!;
+    const intervalo = Number(carrusel.dataset.intervalo) || 4500;
+    progreso.style.setProperty("--duracion", `${intervalo}ms`);
+
+    let actual = 0;
+    let temporizador: number | undefined;
+    let pausado = reducirMovimiento;
+
+    function mostrar(indice: number, anunciar = false) {
+      actual = (indice + slides.length) % slides.length;
+      slides.forEach((slide, i) => {
+        slide.classList.toggle("activo", i === actual);
+        slide.setAttribute("aria-hidden", String(i !== actual));
+      });
+      puntos.forEach((punto, i) => {
+        punto.classList.toggle("activo", i === actual);
+        if (i === actual) punto.setAttribute("aria-current", "true");
+        else punto.removeAttribute("aria-current");
+      });
+      contador.textContent = `${actual + 1} / ${slides.length}`;
+      if (anunciar) anuncio.textContent = `Foto ${actual + 1} de ${slides.length}`;
+      reiniciar();
+    }
+
+    function reiniciar() {
+      window.clearTimeout(temporizador);
+      progreso.classList.remove("corriendo");
+      if (pausado || document.hidden) return;
+      void progreso.offsetWidth; // Reinicia la animación de la barra.
+      progreso.classList.add("corriendo");
+      temporizador = window.setTimeout(() => mostrar(actual + 1), intervalo);
+    }
+
+    function pausar(valor: boolean) {
+      pausado = valor || reducirMovimiento;
+      reiniciar();
+    }
+
+    carrusel.querySelector(".carrusel__flecha--anterior")!.addEventListener("click", () => mostrar(actual - 1, true));
+    carrusel.querySelector(".carrusel__flecha--siguiente")!.addEventListener("click", () => mostrar(actual + 1, true));
+    puntos.forEach((punto, i) => punto.addEventListener("click", () => mostrar(i, true)));
+
+    marco.addEventListener("keydown", (evento) => {
+      if (evento.key === "ArrowLeft") mostrar(actual - 1, true);
+      if (evento.key === "ArrowRight") mostrar(actual + 1, true);
+    });
+
+    // Pausa mientras se mira o se interactúa.
+    marco.addEventListener("mouseenter", () => pausar(true));
+    marco.addEventListener("mouseleave", () => pausar(false));
+    carrusel.addEventListener("focusin", () => pausar(true));
+    carrusel.addEventListener("focusout", () => pausar(false));
+    document.addEventListener("visibilitychange", reiniciar);
+
+    // Deslizar con el dedo.
+    let inicioX: number | null = null;
+    marco.addEventListener("pointerdown", (evento) => (inicioX = evento.clientX));
+    marco.addEventListener("pointerup", (evento) => {
+      if (inicioX === null) return;
+      const distancia = evento.clientX - inicioX;
+      inicioX = null;
+      if (Math.abs(distancia) > 40) mostrar(actual + (distancia < 0 ? 1 : -1), true);
+    });
+
+    // Solo avanza cuando el carrusel está a la vista.
+    new IntersectionObserver(([entrada]) => pausar(!entrada.isIntersecting), { threshold: 0.4 }).observe(marco);
+  });
+</script>

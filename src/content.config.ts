@@ -17,6 +17,9 @@ const blog = defineCollection({
     // Una persona ("fernanda") o varias (["fernanda", "lourdes"]); siempre se lee como lista.
     author: z.union([autorId, z.array(autorId).min(1)]).transform((v) => (Array.isArray(v) ? v : [v])),
     draft: z.boolean().default(false),
+    // Fotos que se muestran en un carrusel al final del post.
+    galleryTitle: z.string().optional(),
+    gallery: z.array(z.object({ src: z.string(), alt: z.string() })).default([]),
   }),
 });
 

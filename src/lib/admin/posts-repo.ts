@@ -167,6 +167,9 @@ export async function actualizarPost(
 
   const { cambios, cover } = cambiosDeImagenes(slug, entrada, actual.datos.cover);
   const datos = datosDesdeEntrada(entrada, cover, actual.datos.date);
+  // El editor no maneja la galería todavía: se conserva tal cual.
+  datos.gallery = actual.datos.gallery;
+  datos.galleryTitle = actual.datos.galleryTitle;
 
   cambios.push({ ruta: rutaPost(slug), contenidoBase64: base64(serializarPost(datos, entrada.contenido)) });
   await commitCambios(cambios, `Edita post: ${entrada.titulo} (por ${nombrePorAutor(autorSesion)})`);

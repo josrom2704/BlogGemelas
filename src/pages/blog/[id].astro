@@ -3,6 +3,7 @@ import { render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import AutoraBadge from "../../components/AutoraBadge.astro";
 import BotonesCompartir from "../../components/BotonesCompartir.astro";
+import Carrusel from "../../components/Carrusel.astro";
 import { getPublishedPosts, formatearFecha, tiempoDeLectura } from "../../lib/posts";
 import { site, personas } from "../../config";
 
@@ -20,7 +21,7 @@ export async function getStaticPaths() {
 
 const { post, anterior, siguiente } = Astro.props;
 const { Content } = await render(post);
-const { title, description, cover, coverAlt, category, date, author } = post.data;
+const { title, description, cover, coverAlt, category, date, author, gallery, galleryTitle } = post.data;
 const minutos = tiempoDeLectura(post.body ?? "");
 const urlActual = new URL(Astro.url.pathname, site.url).toString();
 
@@ -51,6 +52,8 @@ const colorAcento = author.length === 1 ? personas[author[0]]?.color : undefined
       <div class="post__cuerpo">
         <Content />
       </div>
+
+      <Carrusel imagenes={gallery} titulo={galleryTitle} />
 
       <BotonesCompartir titulo={title} url={urlActual} />
 

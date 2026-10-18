@@ -7,6 +7,8 @@ coverAlt: "Artículos organizados para el Garage Sale"
 category: "Recaudación"
 tags: ["garage-sale", "recaudacion", "hmun"]
 author: "fernanda"
+galleryTitle: "Así se vivió el Garage Sale"
+gallery: [{"src":"/images/garage-sale/venta-1.jpg","alt":"Clientas revisando la ropa del perchero instalado en la acera durante el Garage Sale"},{"src":"/images/garage-sale/venta-2.jpg","alt":"Una señora mira las blusas y prendas colgadas en el perchero"},{"src":"/images/garage-sale/venta-3.jpg","alt":"Una integrante de la delegación muestra libros a una compradora, sentadas junto a la mesa de libros"},{"src":"/images/garage-sale/venta-4.jpg","alt":"Integrantes de la delegación enseñan un pantalón de mezclilla a una compradora"},{"src":"/images/garage-sale/venta-5.jpg","alt":"Un joven revisa los libros en venta mientras otras personas miran la ropa"}]
 ---
 
 Una de las formas en las que estamos recaudando fondos para llegar a Boston es con un **Garage Sale**, y quiero contarles exactamente cómo va a funcionar, porque muchas personas nos han escrito preguntando qué pueden donar.

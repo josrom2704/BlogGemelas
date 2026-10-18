@@ -37,6 +37,18 @@ const idsColaboradores = Object.keys(colaboradores) as AutorId[];
               </div>
             </div>
 
+            {persona.presentacion && persona.presentacion.length > 0 && (
+              <div class="sobre__presentacion">
+                <p>{persona.presentacion[0]}</p>
+                {persona.presentacion.length > 1 && (
+                  <details class="sobre__mas">
+                    <summary>Seguir leyendo</summary>
+                    {persona.presentacion.slice(1).map((parrafo) => <p>{parrafo}</p>)}
+                  </details>
+                )}
+              </div>
+            )}
+
             {persona.gustos && persona.gustos.length > 0 && (
               <>
                 <h3 class="sobre__subtitulo">Le gusta</h3>
@@ -102,9 +114,15 @@ const idsColaboradores = Object.keys(colaboradores) as AutorId[];
 
   .sobre__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    grid-template-columns: 1fr;
     gap: 1.5rem;
     align-items: stretch;
+  }
+
+  @media (min-width: 760px) {
+    .sobre__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   .sobre__tarjeta {
@@ -154,6 +172,42 @@ const idsColaboradores = Object.keys(colaboradores) as AutorId[];
     font-style: italic;
     margin: 0;
     font-size: 0.92rem;
+  }
+
+  .sobre__presentacion p {
+    margin: 0 0 0.8rem;
+    line-height: 1.65;
+  }
+
+  .sobre__mas summary {
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: var(--acento);
+    list-style: none;
+    margin-bottom: 0.8rem;
+  }
+
+  .sobre__mas summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .sobre__mas summary::after {
+    content: " ↓";
+  }
+
+  .sobre__mas[open] summary::after {
+    content: " ↑";
+  }
+
+  .sobre__mas[open] summary {
+    font-size: 0;
+    margin: 0;
+  }
+
+  .sobre__mas[open] summary::after {
+    font-size: 0.9rem;
+    content: "Mostrar menos ↑";
   }
 
   .sobre__subtitulo {

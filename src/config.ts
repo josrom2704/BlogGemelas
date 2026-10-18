@@ -22,7 +22,8 @@ export const site = {
 // Integrantes de la delegación y colaboradores. La clave de cada persona
 // (fernanda, jimena, ...) es su identificador: se usa en el campo "author" de
 // los posts y en sus variables del panel (<CLAVE>_USER y <CLAVE>_PASS).
-// Privacidad: solo nombres de pila; nada de apellidos, colegio ni edades.
+// Privacidad: nombres de pila en todo el sitio (los apellidos solo en las
+// presentaciones); nada de colegio, dirección ni edades.
 // ----------------------------------------------------------------------------
 
 export interface Persona {
@@ -34,6 +35,8 @@ export interface Persona {
   /** Rol visible, ej. "Delegada" o "Fotografía". */
   rol: string;
   frase?: string;
+  /** Presentación en primera persona, un párrafo por elemento. */
+  presentacion?: string[];
   gustos?: string[];
   suenos?: string[];
 }
@@ -45,6 +48,11 @@ export const integrantes = {
     color: "#8B2439",
     foto: "/images/fernanda.jpg",
     rol: "Delegada",
+    presentacion: [
+      "¡Hola! Mi nombre es María Fernanda Romero y me interesa mucho comprender cómo funciona el mundo, cómo se toman las decisiones que afectan a las sociedades y de qué manera las leyes, la política y la cooperación entre países pueden contribuir a resolver los problemas que enfrentamos. Disfruto analizar diferentes puntos de vista, construir argumentos y encontrar en el diálogo una forma de defender mis ideas y aprender de los demás.",
+      "A lo largo de mi trayectoria, he tenido la oportunidad de participar en competencias de debate a nivel nacional e internacional. Cada una de estas experiencias ha fortalecido mi interés por comprender mejor el mundo que nos rodea, buscar soluciones a problemas globales y reconocer el poder que tienen nuestras voces cuando se utilizan para construir, proponer y transformar.",
+      "Para mí, participar en Harvard Model United Nations 2027 significa mucho más que asistir a una conferencia: representa la oportunidad tan grande de aprender de jóvenes con ideas, experiencias y perspectivas diferentes, salir de mi zona de confort y seguir creciendo tanto académica como personalmente. Pero, sobre todo, significa llevar con orgullo el nombre de El Salvador a un escenario internacional y demostrar que los jóvenes salvadoreños también tenemos ideas, sueños, voces y propuestas capaces de generar un impacto en el mundo. ¡Estoy emocionada por todo lo que esta experiencia puede enseñarme y por las oportunidades que traerá para seguir creciendo como líder y como persona!",
+    ],
     gustos: [
       "Escribir en su cuaderno de ideas",
       "El café con leche de los domingos",
@@ -91,6 +99,10 @@ export const integrantes = {
     color: "#9A4F12",
     foto: "/images/camila.jpg",
     rol: "Delegada",
+    presentacion: [
+      "Mi nombre es Camila Cubas y me apasionan la diplomacia, las relaciones internacionales y el debate. He tenido la oportunidad de participar en competencias de debate a nivel nacional e internacional, experiencias que han fortalecido mi interés por el diálogo y la búsqueda de soluciones a los desafíos globales.",
+      "Participar en Harvard Model United Nations 2027 representa una oportunidad para seguir aprendiendo, compartir perspectivas con jóvenes de todo el mundo y, sobre todo, representar con orgullo a mi país, El Salvador, en un escenario internacional.",
+    ],
     gustos: [],
     suenos: [],
   },

@@ -72,7 +72,7 @@ Las portadas se guardan en `public/images/<slug>-portada-*.jpg` y las imágenes 
 3. Escribe el contenido en Markdown debajo del frontmatter.
 4. Guarda la imagen de portada en `public/images/`.
 
-**Importante — privacidad:** las integrantes son menores de edad. En cualquier post nuevo, usa solo nombres de pila y no incluyas apellidos, dirección, colegio ni edad exacta.
+**Importante — privacidad:** las integrantes son menores de edad. En cualquier post nuevo, usa solo nombres de pila (los apellidos solo aparecen en las presentaciones de "Sobre nosotras") y no incluyas apellidos, dirección, colegio ni edad exacta.
 
 ## Cambiar bios, contactos y fecha del evento
 
