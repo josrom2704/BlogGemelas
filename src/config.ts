@@ -22,8 +22,8 @@ export const site = {
 // Integrantes de la delegación y colaboradores. La clave de cada persona
 // (fernanda, jimena, ...) es su identificador: se usa en el campo "author" de
 // los posts y en sus variables del panel (<CLAVE>_USER y <CLAVE>_PASS).
-// Privacidad: nombres de pila en todo el sitio (los apellidos solo en las
-// presentaciones); nada de colegio, dirección ni edades.
+// Privacidad: nombres de pila en todo el sitio; apellidos, colegio y grado
+// solo en presentaciones y trayectorias. Nada de dirección ni edades exactas.
 // ----------------------------------------------------------------------------
 
 export interface Persona {
@@ -35,6 +35,8 @@ export interface Persona {
   /** Rol visible, ej. "Delegada" o "Fotografía". */
   rol: string;
   frase?: string;
+  /** Trayectoria y reconocimientos, en tercera persona. */
+  trayectoria?: string;
   /** Presentación en primera persona, un párrafo por elemento. */
   presentacion?: string[];
   gustos?: string[];
@@ -48,6 +50,8 @@ export const integrantes = {
     color: "#8B2439",
     foto: "/images/fernanda.jpg",
     rol: "Delegada",
+    trayectoria:
+      "Estudiante de undécimo grado en el Colegio La Floresta y una destacada participante en Modelos de Naciones Unidas (MUN). A lo largo de su trayectoria, ha demostrado habilidades en debate, negociación y liderazgo, obteniendo múltiples reconocimientos. Ha sido premiada como Delegada de Honor en ambas ediciones de MUN La Floresta, recibió Mención Honorífica en MUN ESEN 2023, obtuvo el Premio a la Diplomacia en MUN ESEN 2024 y fue reconocida con el Premio al Liderazgo en MUN ESEN 2024.",
     presentacion: [
       "¡Hola! Mi nombre es María Fernanda Romero y me interesa mucho comprender cómo funciona el mundo, cómo se toman las decisiones que afectan a las sociedades y de qué manera las leyes, la política y la cooperación entre países pueden contribuir a resolver los problemas que enfrentamos. Disfruto analizar diferentes puntos de vista, construir argumentos y encontrar en el diálogo una forma de defender mis ideas y aprender de los demás.",
       "A lo largo de mi trayectoria, he tenido la oportunidad de participar en competencias de debate a nivel nacional e internacional. Cada una de estas experiencias ha fortalecido mi interés por comprender mejor el mundo que nos rodea, buscar soluciones a problemas globales y reconocer el poder que tienen nuestras voces cuando se utilizan para construir, proponer y transformar.",
@@ -71,6 +75,8 @@ export const integrantes = {
     color: "#1B2A4A",
     foto: "/images/jimena.jpg",
     rol: "Delegada",
+    trayectoria:
+      "Estudiante de undécimo grado en el Colegio La Floresta y una destacada participante en Modelos de Naciones Unidas (MUN). A lo largo de su trayectoria, ha demostrado habilidades en debate, negociación y liderazgo, obteniendo múltiples reconocimientos. Ha sido premiada como Delegada de Honor en ambas ediciones de MUN La Floresta, recibió Mención Honorífica en MUN ESEN 2023, obtuvo el Premio a la Diplomacia en MUN ESEN 2024 y fue reconocida con el Premio al Liderazgo en MUN ESEN 2024.",
     presentacion: [
       "Mi nombre es Jimena Romero y me interesa el debate porque disfruto expresar mis ideas, defender mis opiniones y escuchar diferentes puntos de vista. Me gusta aprender sobre temas de actualidad, entender distintas perspectivas y descubrir cómo las ideas pueden generar conversaciones interesantes y abrir nuevas formas de pensar.",
       "Estoy muy emocionada por participar en Harvard Model United Nations, especialmente por la oportunidad de representar a mi país, compartir mi perspectiva y conocer a jóvenes de diferentes partes del mundo. Espero aprender de esta experiencia, enfrentar nuevos retos y llevarme nuevas ideas y conocimientos que me ayuden a crecer tanto personal como académicamente.",

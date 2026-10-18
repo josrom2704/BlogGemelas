@@ -49,6 +49,13 @@ const idsColaboradores = Object.keys(colaboradores) as AutorId[];
               </div>
             )}
 
+            {persona.trayectoria && (
+              <div class="sobre__trayectoria">
+                <h3 class="sobre__subtitulo">Trayectoria</h3>
+                <p>{persona.trayectoria}</p>
+              </div>
+            )}
+
             {persona.gustos && persona.gustos.length > 0 && (
               <>
                 <h3 class="sobre__subtitulo">Le gusta</h3>
@@ -208,6 +215,20 @@ const idsColaboradores = Object.keys(colaboradores) as AutorId[];
   .sobre__mas[open] summary::after {
     font-size: 0.9rem;
     content: "Mostrar menos ↑";
+  }
+
+  .sobre__trayectoria {
+    background: color-mix(in srgb, var(--acento) 7%, white);
+    border-left: 4px solid var(--acento);
+    border-radius: 0 14px 14px 0;
+    padding: 0.2rem 1.1rem 0.9rem;
+    margin: 0.4rem 0 0.6rem;
+  }
+
+  .sobre__trayectoria p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
   }
 
   .sobre__subtitulo {
