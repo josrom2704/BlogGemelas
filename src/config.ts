@@ -71,6 +71,10 @@ export const integrantes = {
     color: "#1B2A4A",
     foto: "/images/jimena.jpg",
     rol: "Delegada",
+    presentacion: [
+      "Mi nombre es Jimena Romero y me interesa el debate porque disfruto expresar mis ideas, defender mis opiniones y escuchar diferentes puntos de vista. Me gusta aprender sobre temas de actualidad, entender distintas perspectivas y descubrir cómo las ideas pueden generar conversaciones interesantes y abrir nuevas formas de pensar.",
+      "Estoy muy emocionada por participar en Harvard Model United Nations, especialmente por la oportunidad de representar a mi país, compartir mi perspectiva y conocer a jóvenes de diferentes partes del mundo. Espero aprender de esta experiencia, enfrentar nuevos retos y llevarme nuevas ideas y conocimientos que me ayuden a crecer tanto personal como académicamente.",
+    ],
     gustos: [
       "Leer hasta quedarse dormida",
       "Organizar listas y calendarios para todo",
