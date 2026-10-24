@@ -1,10 +1,10 @@
-# DEMUNES (MUN El Salvador)
+# El Salvador MUN Delegation
 
 Blog de la delegación de El Salvador (María Fernanda, María Jimena, Lourdes y Camila) y sus colaboradores rumbo al Harvard Model United Nations 2027, escrito con [Astro](https://astro.build) y desplegado en Vercel. Las páginas públicas son estáticas; el panel `/admin` corre en el servidor y publica los posts haciendo commits al repositorio.
 
 ## Nombre del blog
 
-El nombre se cambia en un solo lugar: `src/config.ts` → `site.nombre` (siglas, `DEMUNES`) y `site.nombreCompleto` (`MUN El Salvador`).
+El nombre se cambia en un solo lugar: `src/config.ts` → `site.nombre` (`El Salvador MUN Delegation`) y `site.usuario` (`elsalvadormundelegation`).
 
 ## Correr el proyecto en local
 

@@ -9,12 +9,11 @@ import { site, hmun, idsIntegrantes, personas } from "../config";
 const posts = (await getPublishedPosts()).slice(0, 3);
 ---
 
-<BaseLayout title={`${site.nombre} (${site.nombreCompleto})`}>
+<BaseLayout title={site.nombre}>
   <section class="hero">
     <div class="contenedor hero__interior">
       <p class="hero__kicker">Un diario compartido desde El Salvador</p>
       <h1 class="hero__titulo">{site.nombre}</h1>
-      <p class="hero__siglas">{site.nombreCompleto}</p>
       <p class="hero__lema">
         {site.lema} <Corazon color="#8B2439" class="hero__corazon" />
       </p>
@@ -113,14 +112,6 @@ const posts = (await getPublishedPosts()).slice(0, 3);
 
   .hero__titulo {
     margin-bottom: 0.3rem;
-  }
-
-  .hero__siglas {
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-fernanda);
-    margin-bottom: 0.6rem;
   }
 
   .hero__lema {

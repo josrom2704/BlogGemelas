@@ -23,7 +23,6 @@ function estaActivo(href: string) {
     <a href="/" class="encabezado__logo">
       <Corazon color="#8B2439" class="encabezado__corazon" />
       <span>{site.nombre}</span>
-      <small class="encabezado__siglas">{site.nombreCompleto}</small>
     </a>
 
     <button
@@ -79,18 +78,9 @@ function estaActivo(href: string) {
     color: var(--color-texto);
   }
 
-  .encabezado__siglas {
-    font-family: var(--font-texto);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--color-texto-suave);
-  }
-
-  @media (max-width: 420px) {
-    .encabezado__siglas {
-      display: none;
+  @media (max-width: 480px) {
+    .encabezado__logo {
+      font-size: 1.25rem;
     }
   }
 

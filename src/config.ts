@@ -5,13 +5,13 @@
 // ============================================================================
 
 export const site = {
-  // Nombre corto del blog (logo, pestaña del navegador, RSS).
-  nombre: "DEMUNES",
-  // Significado de las siglas, se muestra junto al nombre.
-  nombreCompleto: "MUN El Salvador",
+  // Nombre del blog (logo, pestaña del navegador, RSS).
+  nombre: "El Salvador MUN Delegation",
+  // Usuario en redes, se usa como identificador corto.
+  usuario: "elsalvadormundelegation",
   lema: "Una delegación, un mismo sueño",
   descripcion:
-    "DEMUNES (MUN El Salvador) es el diario de la delegación de El Salvador: María Fernanda, María Jimena, Lourdes y Camila. Lo que vivimos, lo que soñamos y el camino hacia el Harvard Model United Nations 2027.",
+    "El diario de la delegación de El Salvador en el Harvard Model United Nations 2027: María Fernanda, María Jimena, Lourdes y Camila. Lo que vivimos, lo que soñamos y el camino para llegar.",
   idioma: "es",
   // URL final del sitio (debe coincidir con "site" en astro.config.mjs).
   url: "https://blogfjrm.vercel.app",
@@ -99,7 +99,10 @@ export const integrantes = {
     color: "#2F6B4F",
     foto: "/images/lourdes.jpg",
     rol: "Delegada",
-    // Completa con su frase, gustos y sueños cuando ella los comparta.
+    presentacion: [
+      "Mi nombre es Lourdes Salinas y el debate se ha convertido en una de las formas en las que más disfruto aprender y conocer el mundo. Desde que comencé a participar en competencias de debate y Modelos de Naciones Unidas, he descubierto mi interés por comprender los conflictos internacionales, analizar diferentes puntos de vista y encontrar soluciones a través del diálogo. Cada experiencia me ha motivado a seguir retándome, fortalecer mis habilidades y aprender de quienes tienen perspectivas diferentes a las mías.",
+      "Participar en Harvard Model United Nations 2027 es un paso muy importante para mí, porque representa la oportunidad de llevar mi pasión por el debate a un escenario internacional y compartir ideas con jóvenes de todo el mundo. Me llena de orgullo representar a El Salvador, un país pequeño en territorio, pero enorme en sueños, talento e ideas. Quiero demostrar que nuestro tamaño no define el alcance de lo que podemos aportar y que los jóvenes salvadoreños también tenemos una voz que merece ser escuchada en las conversaciones que dan forma al futuro.",
+    ],
     gustos: [],
     suenos: [],
   },

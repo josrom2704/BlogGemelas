@@ -30,7 +30,7 @@ function encabezados(): Record<string, string> {
     Authorization: `Bearer ${envRequerido("GITHUB_TOKEN")}`,
     Accept: "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
-    "User-Agent": "demunes-admin",
+    "User-Agent": "elsalvadormundelegation-admin",
   };
 }
 
