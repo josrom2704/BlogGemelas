@@ -113,13 +113,13 @@ const idTitulo = `carrusel-titulo-${Math.random().toString(36).slice(2, 8)}`;
     filter: blur(28px) saturate(1.2) brightness(0.75);
   }
 
-  /* Nunca se agranda por encima de su tamaño real, para que no se pixele. */
+  /* Todas las fotos al mismo alto para que el carrusel no "salte" entre una y otra. */
   .carrusel__slide img {
     position: relative;
     width: auto;
-    height: auto;
+    height: calc(100% - 2.5rem);
     max-width: calc(100% - 2rem);
-    max-height: calc(100% - 2.5rem);
+    object-fit: contain;
     border-radius: 12px;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   }
