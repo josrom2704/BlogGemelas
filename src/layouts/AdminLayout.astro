@@ -18,11 +18,12 @@ const ruta = Astro.url.pathname.replace(/\/+$/, "");
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
     <title>{title} · Panel · {site.nombre}</title>
   </head>
   <body class="admin-body">
     <header class="admin-header">
-      <a href="/admin" class="admin-header__marca">{site.nombre} <small>Panel</small></a>
+      <a href="/admin" class="admin-header__marca"><img src="/images/logo-emblema.png" alt="" width="34" height="34" /> {site.nombre} <small>Panel</small></a>
       <div class="admin-header__acciones">
         {mostrarSalir && (
           <>
@@ -64,6 +65,12 @@ const ruta = Astro.url.pathname.replace(/\/+$/, "");
         font-weight: 700;
         text-decoration: none;
         color: var(--color-texto);
+      }
+
+      .admin-header__marca {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
       }
 
       .admin-header__marca small {

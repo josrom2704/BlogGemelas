@@ -12,6 +12,7 @@ const posts = (await getPublishedPosts()).slice(0, 3);
 <BaseLayout title={site.nombre}>
   <section class="hero">
     <div class="contenedor hero__interior">
+      <img class="hero__emblema" src="/images/logo-emblema.png" alt="" width="256" height="256" />
       <p class="hero__kicker">Un diario compartido desde El Salvador</p>
       <h1 class="hero__titulo">{site.nombre}</h1>
       <p class="hero__lema">
@@ -99,6 +100,19 @@ const posts = (await getPublishedPosts()).slice(0, 3);
 
   .hero__interior {
     max-width: 720px;
+  }
+
+  .hero__emblema {
+    width: 9rem;
+    height: 9rem;
+    margin: 0 auto 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .hero__emblema {
+      width: 7rem;
+      height: 7rem;
+    }
   }
 
   .hero__kicker {

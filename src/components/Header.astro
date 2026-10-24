@@ -1,6 +1,5 @@
 ---
 import { site } from "../config";
-import Corazon from "./Corazon.astro";
 
 const ruta = Astro.url.pathname;
 
@@ -21,7 +20,7 @@ function estaActivo(href: string) {
 <header class="encabezado">
   <div class="contenedor encabezado__interior">
     <a href="/" class="encabezado__logo">
-      <Corazon color="#8B2439" class="encabezado__corazon" />
+      <img src="/images/logo-emblema.png" alt="" class="encabezado__emblema" width="40" height="40" />
       <span>{site.nombre}</span>
     </a>
 
@@ -84,9 +83,10 @@ function estaActivo(href: string) {
     }
   }
 
-  .encabezado__corazon {
-    width: 1.4rem;
-    height: 1.4rem;
+  .encabezado__emblema {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
   }
 
   .encabezado__nav {
