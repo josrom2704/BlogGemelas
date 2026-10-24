@@ -3,8 +3,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import PostCard from "../components/PostCard.astro";
 import CuentaRegresiva from "../components/CuentaRegresiva.astro";
 import Corazon from "../components/Corazon.astro";
+import IconoInstagram from "../components/IconoInstagram.astro";
 import { getPublishedPosts } from "../lib/posts";
-import { site, hmun, idsIntegrantes, personas } from "../config";
+import { site, hmun, idsIntegrantes, personas, redes } from "../config";
 
 const posts = (await getPublishedPosts()).slice(0, 3);
 ---
@@ -89,6 +90,19 @@ const posts = (await getPublishedPosts()).slice(0, 3);
       </div>
     )}
   </section>
+
+  {redes.instagram && (
+    <section class="contenedor">
+      <a class="instagram-banda" href={redes.instagram} target="_blank" rel="noopener">
+        <span class="instagram-banda__icono"><IconoInstagram /></span>
+        <span class="instagram-banda__texto">
+          <span class="instagram-banda__titulo">Síguenos en Instagram</span>
+          <span class="instagram-banda__usuario">@{site.usuario}</span>
+        </span>
+        <span class="instagram-banda__accion">Ver perfil →</span>
+      </a>
+    </section>
+  )}
 </BaseLayout>
 
 <style>
@@ -254,6 +268,68 @@ const posts = (await getPublishedPosts()).slice(0, 3);
     font-size: 1.4rem;
     margin-bottom: 0.6rem;
     color: white;
+  }
+
+  .instagram-banda {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    flex-wrap: wrap;
+    padding: 1.4rem 1.75rem;
+    margin-bottom: 1.5rem;
+    border-radius: var(--radio-tarjeta);
+    background: var(--gradiente-ambas);
+    color: white;
+    text-decoration: none;
+    box-shadow: var(--sombra-suave);
+    transition: transform 0.2s ease;
+  }
+
+  .instagram-banda:hover {
+    transform: translateY(-2px);
+  }
+
+  .instagram-banda__icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .instagram-banda__icono :global(svg) {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .instagram-banda__texto {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 12rem;
+  }
+
+  .instagram-banda__titulo {
+    font-family: var(--font-manuscrita);
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .instagram-banda__usuario {
+    opacity: 0.85;
+    font-weight: 700;
+    word-break: break-all;
+  }
+
+  .instagram-banda__accion {
+    font-weight: 800;
+    background: white;
+    color: var(--color-fernanda);
+    padding: 0.55rem 1.2rem;
+    border-radius: 999px;
   }
 
   .ultimos-posts__encabezado {

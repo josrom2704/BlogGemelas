@@ -233,7 +233,7 @@ export type Categoria = (typeof categorias)[number];
 // ----------------------------------------------------------------------------
 
 export const redes = {
-  instagram: "",
+  instagram: "https://www.instagram.com/elsalvadormundelegation/",
   facebook: "",
   email: "",
 };

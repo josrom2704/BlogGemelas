@@ -1,5 +1,6 @@
 ---
-import { site } from "../config";
+import { site, redes } from "../config";
+import IconoInstagram from "./IconoInstagram.astro";
 
 const ruta = Astro.url.pathname;
 
@@ -44,6 +45,12 @@ function estaActivo(href: string) {
           </a>
         ))
       }
+      {redes.instagram && (
+        <a href={redes.instagram} class="encabezado__enlace encabezado__instagram" target="_blank" rel="noopener" aria-label="Instagram de la delegación">
+          <IconoInstagram />
+          <span class="encabezado__instagram-texto">Instagram</span>
+        </a>
+      )}
     </nav>
   </div>
 </header>
@@ -83,6 +90,10 @@ function estaActivo(href: string) {
     }
   }
 
+  .encabezado__logo span {
+    white-space: nowrap;
+  }
+
   .encabezado__emblema {
     width: 2.5rem;
     height: 2.5rem;
@@ -95,6 +106,7 @@ function estaActivo(href: string) {
   }
 
   .encabezado__enlace {
+    white-space: nowrap;
     text-decoration: none;
     color: var(--color-texto-suave);
     font-weight: 700;
@@ -131,7 +143,26 @@ function estaActivo(href: string) {
     margin: 0 auto;
   }
 
-  @media (max-width: 780px) {
+  .encabezado__instagram {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .encabezado__instagram:hover {
+    color: var(--color-fernanda);
+  }
+
+  /* En escritorio solo el ícono; en el menú del celular, ícono y texto. */
+  .encabezado__instagram-texto {
+    display: none;
+  }
+
+  @media (max-width: 1040px) {
+    .encabezado__instagram-texto {
+      display: inline;
+    }
+
     .encabezado__boton-menu {
       display: flex;
     }

@@ -1,6 +1,7 @@
 ---
 import { site, redes } from "../config";
 import Corazon from "./Corazon.astro";
+import IconoInstagram from "./IconoInstagram.astro";
 
 const anio = new Date().getFullYear();
 ---
@@ -18,7 +19,11 @@ const anio = new Date().getFullYear();
       <a href="/hmun-2027/">HMUN 2027</a>
       <a href="/como-ayudar/">Cómo ayudar</a>
       <a href="/rss.xml">RSS</a>
-      {redes.instagram && <a href={redes.instagram} target="_blank" rel="noopener">Instagram</a>}
+      {redes.instagram && (
+        <a href={redes.instagram} target="_blank" rel="noopener" class="pie__instagram">
+          <IconoInstagram /> @{site.usuario}
+        </a>
+      )}
       {redes.facebook && <a href={redes.facebook} target="_blank" rel="noopener">Facebook</a>}
     </nav>
     <p class="texto-suave pie__copy">© {anio} {site.nombre}. Hecho con cariño desde El Salvador.</p>
@@ -26,6 +31,12 @@ const anio = new Date().getFullYear();
 </footer>
 
 <style>
+  .pie__instagram {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
   .pie {
     background: white;
     border-top: 2px solid var(--color-rosa);
